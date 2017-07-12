@@ -205,6 +205,16 @@ Emacs bindings that stick around
     (setq projectile-completion-system 'ivy)
     (message "projectile loaded"))
 #+END_SRC
+** =counsel-projectile=
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel-projectile
+    :ensure t
+    :defer t
+    :config
+    (counsel-projectile-on)
+    (message "counsel-projectile loaded")
+    :bind (("C-c p SPC" . counsel-projectile)))
+#+END_SRC
 ** =neotree=
 #+BEGIN_SRC emacs-lisp
   (use-package neotree
