@@ -1,0 +1,469 @@
+* Set personal info
+#+BEGIN_SRC emacs-lisp
+  (setq user-full-name "Suraj Kumar Reddy"
+        user-mail-address "suraj@gmail.com"
+        calendar-latitude 17.3
+        calendar-longitude -78.4
+        calendar-location-name "Hyderabad, IND")
+#+END_SRC
+* Package management
+#+BEGIN_SRC emacs-lisp
+  ; packages to install
+  (defvar package-list '(
+                         use-package
+                         diminish
+                         bind-key))
+  ; package repos
+  (setq package-archives '(("melpa" . "http://melpa.org/packages/")
+                           ("org" . "http://orgmode.org/elpa/")))
+  ; activate all the packages (in particular autoloads)
+  (package-initialize)
+
+  ; fetch the list of packages available
+  (unless package-archive-contents
+    (package-refresh-contents))
+
+  ; install the missing packages
+  (dolist (package package-list)
+    (unless (package-installed-p package)
+      (package-install package)))
+
+  (require 'use-package)
+  (require 'diminish)
+  (require 'bind-key)
+#+END_SRC
+* Set default font and configure font resizing
+I use Consolas
+
+The standard =text-scale-= functions just resize the text in the
+current buffer. These functions and bindings resize everything all
+together.
+#+BEGIN_SRC emacs-lisp
+  (setq my/default-font "Monaco")
+  (setq my/default-font-size 13)
+  (setq my/current-font-size my/default-font-size)
+
+  (setq my/font-change-increment 1.1)
+
+  (defun my/set-font-size ()
+    "Set the font to `my/default-font' at `my/current-font-size'."
+    (set-frame-font
+     (concat my/default-font "-" (number-to-string my/current-font-size))))
+
+  (defun my/reset-font-size ()
+    "Change font size back to `my/default-font-size'."
+    (interactive)
+    (setq my/current-font-size my/default-font-size)
+    (my/set-font-size))
+
+  (defun my/increase-font-size ()
+    "Increase current font size by a factor of `my/font-change-increment'."
+    (interactive)
+    (setq my/current-font-size
+          (ceiling (* my/current-font-size my/font-change-increment)))
+    (my/set-font-size))
+
+  (defun my/decrease-font-size ()
+    "Decrease current font size by a factor of `my/font-change-increment', down to a minimum size of 1."
+    (interactive)
+    (setq my/current-font-size
+          (max 1
+               (floor (/ my/current-font-size my/font-change-increment))))
+    (my/set-font-size))
+
+  (define-key global-map (kbd "C-)") 'my/reset-font-size)
+  (define-key global-map (kbd "C-+") 'my/increase-font-size)
+  (define-key global-map (kbd "C-=") 'my/increase-font-size)
+  (define-key global-map (kbd "C-_") 'my/decrease-font-size)
+  (define-key global-map (kbd "C--") 'my/decrease-font-size)
+
+  (my/reset-font-size)
+#+END_SRC
+* UI Preferences
+** Disable toolbars and menus
+#+BEGIN_SRC emacs-lisp
+  (tool-bar-mode 0)
+  (menu-bar-mode 0)
+  (when window-system
+    (scroll-bar-mode -1))
+#+END_SRC
+** Use =global-prettify-symbols-mode=
+#+BEGIN_SRC emacs-lisp
+  (global-prettify-symbols-mode t)
+#+END_SRC
+** =rainbow-delimeters=
+Rainbow delimeters show matching braces with same color
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t
+    :defer t
+    :init
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+    :config
+    (message "rainbow-delimeters loaded"))
+#+END_SRC
+** Icon pack
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons
+    :ensure t
+    :defer t
+    :config
+    (message "all the icons loaded"))
+#+END_SRC
+* Workspaces
+#+BEGIN_SRC emacs-lisp
+  (use-package persp-mode
+    :ensure t
+    :config
+    (with-eval-after-load "persp-mode-autoloads"
+        (setq wg-morph-on nil) ;; switch off animation
+        (setq persp-autokill-buffer-on-remove 'kill-weak)
+        (setq persp-keymap-prefix "C-c w")
+        (add-hook 'after-init-hook #'(lambda () (persp-mode 1)))))
+#+END_SRC
+* load =misc-cmds.el=
+A set of useful functions. Source: [[https://github.com/emacsmirror/emacswiki.org/blob/master/misc-cmds.el][misc-cmds.el]]
+#+BEGIN_SRC emacs-lisp
+  (load-file "~/.emacs.d/resources/misc-cmds.el")
+#+END_SRC
+* Enable better defaults
+
+#+BEGIN_SRC emacs-lisp
+  (use-package better-defaults
+    :config
+    (message "better-defaults loaded"))
+#+END_SRC
+* Use sensible defaults
+Use [[https://github.com/surajkumar6/emacs-config/blob/master/resources/sensible-defaults.el][sensible-defaults.el]] for some basic settings
+#+BEGIN_SRC emacs-lisp
+  (load-file "~/.emacs.d/resources/sensible-defaults.el")
+  (sensible-defaults/use-all-settings)
+  (sensible-defaults/use-all-keybindings)
+  (sensible-defaults/backup-to-temp-directory)
+#+END_SRC
+* Search and Completion
+** =ivy=, =swiper= and =counsel=
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel
+    :ensure t
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-count-format "(%d/%d) ")
+    (message "ivy,swiper,counsel loaded")
+    :bind (
+           ("M-s" . swiper)
+           ("M-x" . counsel-M-x)
+           ("C-f" . counsel-find-file)
+           ("C-h f" . counsel-describe-function)
+           ("C-h v" . counsel-describe-variable)
+           ("C-c g" . counsel-git)
+           ("C-c j" . counsel-git-grep)
+           ("C-x l" . counsel-locate)
+           ("C-c C-r" . ivy-resume)))
+#+END_SRC
+** =company-mode=
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :defer t
+    :init
+    (add-hook 'after-init-hook 'global-company-mode)
+    :config
+    (setq company-idle-delay 0)
+    (setq company-minimum-prefix-length 3)
+    (setq company-show-numbers t)
+    (message "company-mode loaded"))
+#+END_SRC
+* =hydra=
+Emacs bindings that stick around
+#+BEGIN_SRC emacs-lisp
+  (use-package hydra
+    :ensure t)
+#+END_SRC
+* Project management
+** =projectile=
+=projectile= is a project interaction library for Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :defer t
+    :init
+    (projectile-global-mode)
+    :config
+    (setq projectile-completion-system 'ivy)
+    (message "projectile loaded"))
+#+END_SRC
+** =neotree=
+#+BEGIN_SRC emacs-lisp
+  (use-package neotree
+    :ensure t
+    :defer t
+    :init
+    (defhydra hydra-neotree (:hint nil
+                                     :pre  (neotree-dir (projectile-project-root))
+                                     :post neotree-hide
+                                     :color pink)
+      ("r" neotree-rename-node "rename")
+      ("w" neotree-copy-node "copy")
+      ("n" neotree-create-node "new")
+      ("d" neotree-delete-node "delete")
+      ("i" neotree-previous-line)
+      ("k" neotree-next-line)
+      ("h" neotree-hidden-file-toggle "hidden-files")
+      ("s" neotree-stretch-toggle "stretch")
+      ("f" neotree-quick-look "quick-look")
+      ("e" neotree-enter "select")
+      ("q" nil "quit"))
+    (global-set-key (kbd "C-c n") 'hydra-neotree/body)
+    :config
+    (use-package all-the-icons)
+    (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
+#+END_SRC
+* Version Control
+=magit= is a git porcelain for emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :defer t
+    :config
+    ;;open magit-status in a fullframe buffer
+    (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+    (setq magit-completing-read-function 'ivy-completing-read)
+    (message "magit loaded")
+    :bind (
+           ("C-x g" . magit-status)))
+#+END_SRC
+* Editing settings
+** Enable visual line mode
+#+BEGIN_SRC emacs-lisp
+  (visual-line-mode t)
+#+END_SRC
+** Always kill current buffer
+#+BEGIN_SRC emacs-lisp
+ (substitute-key-definition 'kill-buffer 'kill-buffer-and-its-windows global-map)
+#+END_SRC
+** =company-mode= settings
+*** Use =company-mode= globally
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'after-init-hook 'global-company-mode)
+#+END_SRC
+*** Set idle-delay
+
+#+BEGIN_SRC emacs-lisp
+  (setq company-idle-delay 0)
+#+END_SRC
+*** Set minimum prefix length
+
+#+BEGIN_SRC emacs-lisp
+  (setq company-minimum-prefix-length 3)
+#+END_SRC
+*** Show numbers
+
+#+BEGIN_SRC emacs-lisp
+  (setq company-show-numbers t)
+#+END_SRC
+** Always indent with spaces
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
+** =multiple cursors=
+Multiple cursors like Sublime Text
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :defer t
+    :config
+    (message "multiple-cursors loaded")
+    :bind (
+           ("C->" . mc/mark-next-like-this)
+           ("C-<" . mc/mark-previous-like-this)
+           ("C-c C-<" . mc/mark-all-like-this)))
+#+END_SRC
+** line editing
+*** Copying curent line
+#+BEGIN_SRC emacs-lisp
+  (defun quick-copy-line ()
+        "Copy the whole line that point is on and move to the beginning of the next line.
+      Consecutive calls to this command append each line to the
+      kill-ring."
+        (interactive)
+        (let ((beg (line-beginning-position 1))
+              (end (line-beginning-position 2)))
+          (if (eq last-command 'quick-copy-line)
+              (kill-append (buffer-substring beg end) (< end beg))
+            (kill-new (buffer-substring beg end))))
+        (beginning-of-line 2))
+  (global-set-key (kbd "C-S-C") 'quick-copy-line)
+#+END_SRC
+*** Cutting current line
+#+BEGIN_SRC emacs-lisp
+  (defun quick-cut-line ()
+    "Cut the whole line that point is on.  Consecutive calls to this command append each line to the kill-ring."
+    (interactive)
+    (let ((beg (line-beginning-position 1))
+          (end (line-beginning-position 2)))
+      (if (eq last-command 'quick-cut-line)
+          (kill-append (buffer-substring beg end) (< end beg))
+        (kill-new (buffer-substring beg end)))
+      (delete-region beg end))
+    (beginning-of-line 1)
+    (setq this-command 'quick-cut-line))
+  (global-set-key (kbd "C-S-D") 'quick-cut-line)
+#+END_SRC
+*** Moving lines
+#+BEGIN_SRC emacs-lisp
+  (defun move-line-up ()
+    "Move the line up and place the point at the beginning of the line"
+    (interactive)
+    (transpose-lines 1)
+    (forward-line -2))
+
+  (defun move-line-down ()
+    "Move the line down and place the point at the beginning of the line"
+    (interactive)
+    (forward-line 1)
+    (transpose-lines 1)
+    (forward-line -1))
+
+  (global-set-key (kbd "C-S-K") 'move-line-down)
+  (global-set-key (kbd "C-S-I") 'move-line-up)
+#+END_SRC
+** Smooth scrolling
+#+BEGIN_SRC emacs-lisp
+  (load-file "~/.emacs.d/resources/smooth-scrolling.el")
+  (require 'smooth-scrolling)
+  (setq linum-delay t)
+  (setq auto-window-vscroll nil)
+  (setq scroll-conservatively 10000)
+  (setq auto-save-interval 500)
+  (setq mouse-wheel-follow-mouse 't)
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+#+END_SRC
+** Easy navigation
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-navigation (:hint nil
+                                  :color pink)
+  ("l" forward-char)
+  ("j" backward-char)
+  ("k" next-line)
+  ("i" previous-line)
+  ("w" scroll-down-command)
+  ("s" scroll-up-command)
+  ("a" backward-word)
+  ("d" forward-word)
+  ("q" nil "quit"))
+  (global-set-key (kbd "C-n") 'hydra-navigation/body)
+#+END_SRC
+** Enable smartparens
+#+BEGIN_SRC emacs-lisp
+  (use-package smartparens
+    :ensure t
+    :defer t
+    :init
+    (add-hook 'prog-mode-hook #'smartparens-mode)
+    :config
+    (require 'smartparens-config)
+    (message "smartparens loaded"))
+#+END_SRC
+* Org mode settings
+** Global key bindings
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c l") 'org-store-link)
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (global-set-key (kbd "C-c c") 'org-capture)
+  (global-set-key (kbd "C-c b") 'org-iswitchb)
+#+END_SRC
+** =org-mode= key bindings
+#+BEGIN_SRC emacs-lisp
+  (bind-key "C-M-w" 'append-next-kill org-mode-map)
+  (bind-key "C-c t" 'org-show-todo-tree org-mode-map)
+  (bind-key "C-c r" 'org-refile org-mode-map)
+#+END_SRC
+** Display preferences
+Theme specific settings
+#+BEGIN_SRC emacs-lisp
+(setq org-fontify-whole-heading-line t
+      org-fontify-done-headline t
+      org-fontify-quote-and-verse-blocks t)
+#+END_SRC
+** Source code editing
+Use syntax highlighting in source blocks while editing
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-fontify-natively t)
+#+END_SRC
+Make TAB act as if it were issued in a buffer of the language’s major mode
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-tab-acts-natively t)
+#+END_SRC
+When editing a code snippet, use the current window rather than popping open a new one
+#+BEGIN_SRC emacs-lisp
+  (setq org-ellipsis "↴")
+  (setq org-src-window-setup 'current-window)
+#+END_SRC
+* Utility functions
+** Insert current date and time
+
+#+BEGIN_SRC emacs-lisp
+  (defvar current-date-time-format "%d-%b-%Y %k:%M"
+    "Format of date to insert with `insert-current-date-time' func See help of `format-time-string' for possible replacements")
+
+  (defvar current-time-format "%k:%M:%S"
+    "Format of date to insert with `insert-current-time' func.Note the weekly scope of the command's precision.")
+
+  (defun insert-current-date-time ()
+    "insert the current date and time into current buffer.Uses `current-date-time-format' for the formatting the date/time."
+         (interactive)
+         (insert (format-time-string current-date-time-format (current-time)))
+         )
+
+  (defun insert-current-time ()
+    "insert the current time (1-week scope) into the current buffer."
+         (interactive)
+         (insert (format-time-string current-time-format (current-time)))
+         )
+
+  (global-set-key (kbd "C-x C-d") 'insert-current-date-time)
+  (global-set-key (kbd "C-x C-t") 'insert-current-time)
+#+END_SRC
+** Splitting windows
+
+#+BEGIN_SRC emacs-lisp
+  (defun split-window-right-and-move-cursor ()
+    (interactive)
+    (split-window-right)
+    (other-window 1))
+
+  (defun split-window-below-and-move-cursor ()
+    (interactive)
+    (split-window-below)
+    (other-window 1))
+
+  (substitute-key-definition 'split-window-right 'split-window-right-and-move-cursor global-map)
+  (substitute-key-definition 'split-window-below 'split-window-below-and-move-cursor global-map)
+#+END_SRC
+* Custom key bindings
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x C-q") 'save-buffers-kill-terminal)
+  (global-set-key (kbd "C-;") 'set-mark-command)
+
+  ;; easy navigation
+  (global-set-key (kbd "C-i") 'previous-line)
+  (global-set-key (kbd "C-j") 'backward-char)
+  (global-set-key (kbd "C-k") 'next-line)
+  (global-set-key (kbd "C-l") 'forward-char)
+
+  (global-set-key (kbd "M-k") 'scroll-up-command)
+  (global-set-key (kbd "M-i") 'scroll-down-command)
+  (global-set-key (kbd "M-j") 'backward-word)
+  (global-set-key (kbd "M-l") 'forward-word)
+
+  (global-set-key (kbd "C-s") 'save-buffer)
+  (global-set-key (kbd "C-r") (lambda () (interactive) (recenter-top-bottom 0)))
+#+END_SRC
+* Set =custom-file= location
+#+BEGIN_SRC emacs-lisp
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file 'noerror)
+#+END_SRC
