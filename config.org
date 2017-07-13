@@ -171,7 +171,8 @@ Use [[https://github.com/surajkumar6/emacs-config/blob/master/resources/sensible
            ("C-c g" . counsel-git)
            ("C-c j" . counsel-git-grep)
            ("C-x l" . counsel-locate)
-           ("C-c C-r" . ivy-resume)))
+           ("C-c C-r" . ivy-resume)
+           ("C-x b" . ivy-switch-buffer)))
 #+END_SRC
 ** =company-mode=
 #+BEGIN_SRC emacs-lisp
@@ -181,10 +182,26 @@ Use [[https://github.com/surajkumar6/emacs-config/blob/master/resources/sensible
     :init
     (add-hook 'after-init-hook 'global-company-mode)
     :config
-    (setq company-idle-delay 0)
+    (setq company-idle-delay 0.3)
+    (setq company-dabbrev-downcase 0)
     (setq company-minimum-prefix-length 3)
     (setq company-show-numbers t)
     (message "company-mode loaded"))
+#+END_SRC
+** =pos-tip=
+#+BEGIN_SRC emacs-lisp
+  (use-package pos-tip
+    :ensure t
+    :config
+    (message "pos-tip loaded"))
+#+END_SRC
+** =company-quickhelp=
+#+BEGIN_SRC emacs-lisp
+  (use-package company-quickhelp
+    :ensure t
+    :config
+    (company-quickhelp-mode 1)
+    (message "company-quickhelp loaded"))
 #+END_SRC
 * =hydra=
 Emacs bindings that stick around
@@ -258,17 +275,11 @@ Emacs bindings that stick around
 * Editing settings
 ** Enable visual line mode
 #+BEGIN_SRC emacs-lisp
-  (visual-line-mode t)
+  (global-visual-line-mode)
 #+END_SRC
 ** Always kill current buffer
 #+BEGIN_SRC emacs-lisp
  (substitute-key-definition 'kill-buffer 'kill-buffer-and-its-windows global-map)
-#+END_SRC
-** =company-mode= settings
-*** Use =company-mode= globally
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'after-init-hook 'global-company-mode)
 #+END_SRC
 *** Set idle-delay
 
@@ -387,6 +398,70 @@ Multiple cursors like Sublime Text
     :config
     (require 'smartparens-config)
     (message "smartparens loaded"))
+#+END_SRC
+* Programming preferences
+** General preferences
+*** Treat terms in camel case as seprate words globally
+#+BEGIN_SRC emacs-lisp
+  (global-subword-mode 1)
+#+END_SRC
+** Syntax checking
+=flycheck= provides on-the-fly syntax checking
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :defer t
+    :init
+    (add-hook 'prog-mode-hook 'global-flycheck-mode)
+    :config
+    (message "flycheck loaded"))
+#+END_SRC
+** Python
+*** =elpy=
+Emacs Python Development Environment
+#+BEGIN_SRC emacs-lisp
+  (use-package elpy
+    :ensure t
+    :defer t
+    :init
+    (add-hook 'python-mode-hook 'elpy-mode)
+    :config
+    (elpy-enable)
+    (when (require 'flycheck nil t)
+      (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+      (add-hook 'elpy-mode-hook 'flycheck-mode))
+    (setq elpy-rpc-backend "jedi")
+    (elpy-use-ipython "ipython2")
+    (setq elpy-company-post-completion-function 'elpy-company-post-complete-parens)
+    (use-package py-autopep8
+      :ensure t
+      :config
+      (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+      (message "py-autopep8 loaded"))
+      (message "elpy loaded"))
+#+END_SRC
+*** =ein=
+#+BEGIN_SRC emacs-lisp
+  (use-package ein
+    :ensure
+    :defer t
+    :init
+    (defun login-and-open-jupyter-notebook()
+      (interactive)
+      (ein:notebooklist-login 8888 "surajreddy6")
+      (ein:notebooklist-open))
+    (global-set-key (kbd "C-x j") 'login-and-open-jupyter-notebook)
+    :config
+    (require 'ein)
+    (require 'ein-loaddefs)
+    (require 'ein-notebook)
+    (require 'ein-subpackages)
+    (setq ein:log-message-level 0)
+    (message "ein loaded"))
+#+END_SRC
+*** Indent 2 spaces
+#+BEGIN_SRC emacs-lisp
+  (setq python-indent 2)
 #+END_SRC
 * Org mode settings
 ** Global key bindings
