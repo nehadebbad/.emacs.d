@@ -80,6 +80,10 @@ together.
   (my/reset-font-size)
 #+END_SRC
 * UI Preferences
+** Theme
+#+BEGIN_SRC emacs-lisp
+  ;(load-theme 'solarized t)
+#+END_SRC
 ** Disable toolbars and menus
 #+BEGIN_SRC emacs-lisp
   (tool-bar-mode 0)
