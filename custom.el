@@ -12,7 +12,6 @@
  '(ein:complete-on-dot nil)
  '(ein:notebook-modes (quote (ein:notebook-python-mode)))
  '(elpy-company-post-completion-function (quote elpy-company-post-complete-parens))
- '(frame-background-mode (quote dark))
  '(package-selected-packages (quote (org-plus-contrib use-package)))
  '(persp-keymap-prefix "w"))
 (custom-set-faces
