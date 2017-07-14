@@ -15,6 +15,7 @@
                          bind-key))
   ; package repos
   (setq package-archives '(("melpa" . "http://melpa.org/packages/")
+                           ("marmalade" . "http://marmalade-repo.org/packages/")
                            ("org" . "http://orgmode.org/elpa/")))
   ; activate all the packages (in particular autoloads)
   (package-initialize)
@@ -143,12 +144,6 @@ Rainbow delimeters show matching braces with same color
 A set of useful functions. Source: [[https://github.com/emacsmirror/emacswiki.org/blob/master/misc-cmds.el][misc-cmds.el]]
 #+BEGIN_SRC emacs-lisp
   (load-file "~/.emacs.d/resources/misc-cmds.el")
-#+END_SRC
-* Enable better defaults
-#+BEGIN_SRC emacs-lisp
-  (use-package better-defaults
-    :config
-    (message "better-defaults loaded"))
 #+END_SRC
 * Use sensible defaults
 Use [[https://github.com/surajkumar6/emacs-config/blob/master/resources/sensible-defaults.el][sensible-defaults.el]] for some basic settings
