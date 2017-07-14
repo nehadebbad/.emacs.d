@@ -79,10 +79,13 @@ together.
 
   (my/reset-font-size)
 #+END_SRC
-* UI Preferences
+* UI Preference
 ** Theme
 #+BEGIN_SRC emacs-lisp
-  ;(load-theme 'solarized t)
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/solarized-theme/")
+  (load-theme 'solarized t)
+  (set-face-attribute 'mode-line-inactive nil
+                      :box nil)
 #+END_SRC
 ** Disable toolbars and menus
 #+BEGIN_SRC emacs-lisp
@@ -142,7 +145,6 @@ A set of useful functions. Source: [[https://github.com/emacsmirror/emacswiki.or
   (load-file "~/.emacs.d/resources/misc-cmds.el")
 #+END_SRC
 * Enable better defaults
-
 #+BEGIN_SRC emacs-lisp
   (use-package better-defaults
     :config
@@ -189,7 +191,6 @@ Use [[https://github.com/surajkumar6/emacs-config/blob/master/resources/sensible
     (setq company-idle-delay 0.3)
     (setq company-dabbrev-downcase 0)
     (setq company-minimum-prefix-length 3)
-    (setq company-show-numbers t)
     (message "company-mode loaded"))
 #+END_SRC
 ** =pos-tip=
