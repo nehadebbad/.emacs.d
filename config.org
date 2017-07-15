@@ -80,6 +80,10 @@ together.
 
   (my/reset-font-size)
 #+END_SRC
+* Set PATH for executables
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'exec-path "~/anaconda2/bin/")
+#+END_SRC
 * UI Preference
 ** Theme
 #+BEGIN_SRC emacs-lisp
@@ -158,6 +162,7 @@ Use [[https://github.com/surajkumar6/emacs-config/blob/master/resources/sensible
 #+BEGIN_SRC emacs-lisp
   (use-package counsel
     :ensure t
+    :defer t
     :config
     (ivy-mode 1)
     (setq ivy-use-virtual-buffers t)
@@ -443,14 +448,12 @@ Emacs Python Development Environment
 *** =ein=
 #+BEGIN_SRC emacs-lisp
   (use-package ein
-    :ensure
+    :ensure t
     :defer t
     :init
-    (defun login-and-open-jupyter-notebook()
-      (interactive)
-      (ein:notebooklist-login 8888 "surajreddy6")
-      (ein:notebooklist-open))
-    (global-set-key (kbd "C-x j") 'login-and-open-jupyter-notebook)
+    (setq jupyter-server-command-path "~/anaconda2/bin/jupyter")
+    (setq jupyter-server-dir "~/Projects/data-science/")
+    (global-set-key (kbd "C-x j") (lambda()(interactive)(ein:jupyter-server-start jupyter-server-command-path jupyter-server-dir)))
     :config
     (require 'ein)
     (require 'ein-loaddefs)
@@ -562,4 +565,12 @@ When editing a code snippet, use the current window rather than popping open a n
 #+BEGIN_SRC emacs-lisp
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
+#+END_SRC
+* Prodigy
+#+BEGIN_SRC emacs-lisp
+  (use-package prodigy
+    :ensure t
+    :defer t
+    :config
+    (message "prodigy loaded"))
 #+END_SRC
