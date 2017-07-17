@@ -4,3 +4,7 @@ persp-confs/
 config.el
 recentf*
 projectile-bookmarks.eld
+request/
+*~
+session.*
+*.data

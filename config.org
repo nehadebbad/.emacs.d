@@ -8,29 +8,7 @@
 #+END_SRC
 * Package management
 #+BEGIN_SRC emacs-lisp
-  ; packages to install
-  (defvar package-list '(
-                         use-package
-                         diminish
-                         bind-key))
-  ; package repos
-  (setq package-archives '(("melpa" . "http://melpa.org/packages/")
-                           ("marmalade" . "http://marmalade-repo.org/packages/")
-                           ("org" . "http://orgmode.org/elpa/")))
-  ; activate all the packages (in particular autoloads)
-  (package-initialize)
-
-  ; fetch the list of packages available
-  (unless package-archive-contents
-    (package-refresh-contents))
-
-  ; install the missing packages
-  (dolist (package package-list)
-    (unless (package-installed-p package)
-      (package-install package)))
-
   (require 'use-package)
-  (require 'diminish)
   (require 'bind-key)
 #+END_SRC
 * Set default font and configure font resizing
@@ -87,10 +65,34 @@ together.
 * UI Preference
 ** Theme
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/solarized-theme/")
-  (load-theme 'solarized t)
-  (set-face-attribute 'mode-line-inactive nil
-                      :box nil)
+  (use-package solarized-theme
+    :demand t
+    :config
+    ;; Don't change the font for some headings and titles
+    (setq solarized-use-variable-pitch nil)
+
+    ;; make the modeline high contrast
+    (setq solarized-high-contrast-mode-line t)
+
+    ;; Use less bolding
+    (setq solarized-use-less-bold t)
+
+    ;; Use more italics
+    (setq solarized-use-more-italic t)
+
+    ;; Use less colors for indicators such as git:gutter, flycheck and similar
+    (setq solarized-emphasize-indicators nil)
+
+    ;; Don't change size of org-mode headlines (but keep other size-changes)
+    (setq solarized-scale-org-headlines nil)
+
+    ;; Avoid all font-size changes
+    (setq solarized-height-minus-1 1.0)
+    (setq solarized-height-plus-1 1.0)
+    (setq solarized-height-plus-2 1.0)
+    (setq solarized-height-plus-3 1.0)
+    (setq solarized-height-plus-4 1.0)
+    (load-theme 'solarized-light t))
 #+END_SRC
 ** Disable toolbars and menus
 #+BEGIN_SRC emacs-lisp
@@ -107,7 +109,6 @@ together.
 Rainbow delimeters show matching braces with same color
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
-    :ensure t
     :defer t
     :init
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
@@ -117,7 +118,6 @@ Rainbow delimeters show matching braces with same color
 ** Icon pack
 #+BEGIN_SRC emacs-lisp
   (use-package all-the-icons
-    :ensure t
     :defer t
     :config
     (message "all the icons loaded"))
@@ -125,7 +125,6 @@ Rainbow delimeters show matching braces with same color
 ** Modeline
 #+BEGIN_SRC emacs-lisp
   (use-package spaceline
-    :ensure t
     :init
     (setq powerline-default-separator 'arrow)
     :config
@@ -136,7 +135,6 @@ Rainbow delimeters show matching braces with same color
 * Workspaces
 #+BEGIN_SRC emacs-lisp
   (use-package persp-mode
-    :ensure t
     :config
     (with-eval-after-load "persp-mode-autoloads"
         (setq wg-morph-on nil) ;; switch off animation
@@ -161,7 +159,6 @@ Use [[https://github.com/surajkumar6/emacs-config/blob/master/resources/sensible
 ** =ivy=, =swiper= and =counsel=
 #+BEGIN_SRC emacs-lisp
   (use-package counsel
-    :ensure t
     :defer t
     :config
     (ivy-mode 1)
@@ -183,7 +180,6 @@ Use [[https://github.com/surajkumar6/emacs-config/blob/master/resources/sensible
 ** =company-mode=
 #+BEGIN_SRC emacs-lisp
   (use-package company
-    :ensure t
     :defer t
     :init
     (add-hook 'after-init-hook 'global-company-mode)
@@ -196,14 +192,12 @@ Use [[https://github.com/surajkumar6/emacs-config/blob/master/resources/sensible
 ** =pos-tip=
 #+BEGIN_SRC emacs-lisp
   (use-package pos-tip
-    :ensure t
     :config
     (message "pos-tip loaded"))
 #+END_SRC
 ** =company-quickhelp=
 #+BEGIN_SRC emacs-lisp
   (use-package company-quickhelp
-    :ensure t
     :config
     (company-quickhelp-mode 1)
     (message "company-quickhelp loaded"))
@@ -211,15 +205,13 @@ Use [[https://github.com/surajkumar6/emacs-config/blob/master/resources/sensible
 * =hydra=
 Emacs bindings that stick around
 #+BEGIN_SRC emacs-lisp
-  (use-package hydra
-    :ensure t)
+  (use-package hydra)
 #+END_SRC
 * Project management
 ** =projectile=
 =projectile= is a project interaction library for Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
-    :ensure t
     :defer t
     :init
     (projectile-global-mode)
@@ -230,7 +222,6 @@ Emacs bindings that stick around
 ** =counsel-projectile=
 #+BEGIN_SRC emacs-lisp
   (use-package counsel-projectile
-    :ensure t
     :defer t
     :config
     (counsel-projectile-on)
@@ -240,7 +231,6 @@ Emacs bindings that stick around
 ** =neotree=
 #+BEGIN_SRC emacs-lisp
   (use-package neotree
-    :ensure t
     :defer t
     :init
     (defhydra hydra-neotree (:hint nil
@@ -267,7 +257,6 @@ Emacs bindings that stick around
 =magit= is a git porcelain for emacs
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :ensure t
     :defer t
     :config
     ;;open magit-status in a fullframe buffer
@@ -286,18 +275,15 @@ Emacs bindings that stick around
 #+BEGIN_SRC emacs-lisp
  (substitute-key-definition 'kill-buffer 'kill-buffer-and-its-windows global-map)
 #+END_SRC
-*** Set idle-delay
-
+** Set idle-delay
 #+BEGIN_SRC emacs-lisp
   (setq company-idle-delay 0)
 #+END_SRC
-*** Set minimum prefix length
-
+** Set minimum prefix length
 #+BEGIN_SRC emacs-lisp
   (setq company-minimum-prefix-length 3)
 #+END_SRC
-*** Show numbers
-
+** Show numbers
 #+BEGIN_SRC emacs-lisp
   (setq company-show-numbers t)
 #+END_SRC
@@ -309,7 +295,6 @@ Emacs bindings that stick around
 Multiple cursors like Sublime Text
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
-    :ensure t
     :defer t
     :config
     (message "multiple-cursors loaded")
@@ -396,7 +381,6 @@ Multiple cursors like Sublime Text
 ** Enable smartparens
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
-    :ensure t
     :defer t
     :init
     (add-hook 'prog-mode-hook #'smartparens-mode)
@@ -414,7 +398,6 @@ Multiple cursors like Sublime Text
 =flycheck= provides on-the-fly syntax checking
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
-    :ensure t
     :defer t
     :init
     (add-hook 'prog-mode-hook 'global-flycheck-mode)
@@ -426,7 +409,6 @@ Multiple cursors like Sublime Text
 Emacs Python Development Environment
 #+BEGIN_SRC emacs-lisp
   (use-package elpy
-    :ensure t
     :defer t
     :init
     (add-hook 'python-mode-hook 'elpy-mode)
@@ -439,7 +421,6 @@ Emacs Python Development Environment
     (elpy-use-ipython "ipython2")
     (setq elpy-company-post-completion-function 'elpy-company-post-complete-parens)
     (use-package py-autopep8
-      :ensure t
       :config
       (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
       (message "py-autopep8 loaded"))
@@ -448,7 +429,6 @@ Emacs Python Development Environment
 *** =ein=
 #+BEGIN_SRC emacs-lisp
   (use-package ein
-    :ensure t
     :defer t
     :init
     (setq jupyter-server-command-path "~/anaconda2/bin/jupyter")
@@ -503,7 +483,6 @@ When editing a code snippet, use the current window rather than popping open a n
 #+END_SRC
 * Utility functions
 ** Insert current date and time
-
 #+BEGIN_SRC emacs-lisp
   (defvar current-date-time-format "%d-%b-%Y %k:%M"
     "Format of date to insert with `insert-current-date-time' func See help of `format-time-string' for possible replacements")
@@ -527,7 +506,6 @@ When editing a code snippet, use the current window rather than popping open a n
   (global-set-key (kbd "C-x C-t") 'insert-current-time)
 #+END_SRC
 ** Splitting windows
-
 #+BEGIN_SRC emacs-lisp
   (defun split-window-right-and-move-cursor ()
     (interactive)
@@ -563,13 +541,12 @@ When editing a code snippet, use the current window rather than popping open a n
 #+END_SRC
 * Set =custom-file= location
 #+BEGIN_SRC emacs-lisp
-(setq custom-file "~/.emacs.d/custom.el")
+(setq custom-file "~/.emacs.d/custom2.el")
 (load custom-file 'noerror)
 #+END_SRC
 * Prodigy
 #+BEGIN_SRC emacs-lisp
   (use-package prodigy
-    :ensure t
     :defer t
     :config
     (message "prodigy loaded"))
