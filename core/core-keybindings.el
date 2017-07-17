@@ -1,3 +1,7 @@
+(defvar spacemacs-default-map (make-sparse-keymap)
+  "Base keymap for all spacemacs leader key commands.")
+
+
 (global-set-key (kbd "C-x C-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "C-;") 'set-mark-command)
 

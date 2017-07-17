@@ -9,6 +9,7 @@
 
 ;; Load core modules
 (add-to-list 'load-path "~/.emacs.d/core/")
+(prefer-coding-system 'utf-8)
 
 (require 'core-ui)
 (require 'core-workspaces)
@@ -83,7 +84,7 @@
 (with-eval-after-load 'org
 (bind-key "C-M-w" 'append-next-kill org-mode-map)
 (bind-key "C-c t" 'org-show-todo-tree org-mode-map)
-(bind-key "C-c r" 'org-refile org-mode-map1))
+(bind-key "C-c r" 'org-refile org-mode-map))
 
 (setq org-fontify-whole-heading-line t
       org-fontify-done-headline t

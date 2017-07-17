@@ -30,7 +30,12 @@
     elpy
     ein
     py-autopep8
-    prodigy)
+    prodigy
+    evil
+    diminish
+    bind-map
+    which-key
+    helm)
   "A list of packages to ensure are installed at launch.")
 
 (defun prelude-packages-installed-p ()

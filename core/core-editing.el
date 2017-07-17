@@ -116,6 +116,8 @@
   :init
   (add-hook 'prog-mode-hook 'global-flycheck-mode)
   :config
+  (with-eval-after-load 'flycheck
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
   (message "flycheck loaded"))
 
 ;; Insert current date and time
