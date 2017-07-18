@@ -44,7 +44,7 @@
   (setq powerline-default-separator 'arrow)
   :config
   (require 'spaceline-config)
-  (spaceline-emacs-theme)
+  (spaceline-spacemacs-theme)
   (spaceline-toggle-minor-modes-off))
 
 ;; Icon pack for neotree
@@ -92,7 +92,5 @@
 (define-key global-map (kbd "C--") 'my/decrease-font-size)
 
 (my/reset-font-size)
-
-
 
 (provide 'core-ui)

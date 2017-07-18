@@ -59,6 +59,73 @@ holds the key bindings."
                                :before-exit ,prop-exit-sexp)))
                  'append))))
 
+;; custom functions used in the following macro
+(defun spacemacs/mplist-get (plist prop)
+  "Get the values associated to PROP in PLIST, a modified plist.
+A modified plist is one where keys are keywords and values are
+all non-keywords elements that follow it.
+If there are multiple properties with the same keyword, only the first property
+and its values is returned.
+Currently this function infloops when the list is circular."
+  (let ((tail plist)
+        result)
+    (while (and (consp tail) (not (eq prop (car tail))))
+      (pop tail))
+    ;; pop the found keyword
+    (pop tail)
+    (while (and (consp tail) (not (keywordp (car tail))))
+      (push (pop tail) result))
+    (nreverse result)))
+
+(defun spacemacs/mplist-remove (plist prop)
+  "Return a copy of a modified PLIST without PROP and its values.
+If there are multiple properties with the same keyword, only the first property
+and its values are removed."
+  (let ((tail plist)
+        result)
+    (while (and (consp tail) (not (eq prop (car tail))))
+      (push (pop tail) result))
+    (when (eq prop (car tail))
+      (pop tail)
+      (while (and (consp tail) (not (keywordp (car tail))))
+        (pop tail)))
+    (while (consp tail)
+      (push (pop tail) result))
+    (nreverse result)))
+
+(defun spacemacs//create-key-binding-form (props func)
+  "Helper which returns a from to bind FUNC to a key according to PROPS.
+Supported properties:
+`:evil-leader STRING'
+    One or several key sequence strings to be set with `spacemacs/set-leader-keys .
+`:evil-leader-for-mode CONS CELL'
+    One or several cons cells (MODE . KEY) where MODE is a major-mode symbol
+    and KEY is a key sequence string to be set with
+    `spacemacs/set-leader-keys-for-major-mode'.
+`:global-key STRING'
+    One or several key sequence strings to be set with `global-set-key'.
+`:define-key CONS CELL'
+    One or several cons cells (MAP . KEY) where MAP is a mode map and KEY is a
+    key sequence string to be set with `define-key'. "
+  (let ((evil-leader (spacemacs/mplist-get props :evil-leader))
+        (evil-leader-for-mode (spacemacs/mplist-get props :evil-leader-for-mode))
+        (global-key (spacemacs/mplist-get props :global-key))
+        (def-key (spacemacs/mplist-get props :define-key)))
+    (append
+     (when evil-leader
+       `((dolist (key ',evil-leader)
+            (spacemacs/set-leader-keys key ',func))))
+     (when evil-leader-for-mode
+       `((dolist (val ',evil-leader-for-mode)
+          (spacemacs/set-leader-keys-for-major-mode
+            (car val) (cdr val) ',func))))
+     (when global-key
+       `((dolist (key ',global-key)
+          (global-set-key (kbd key) ',func))))
+     (when def-key
+       `((dolist (val ',def-key)
+          (define-key (eval (car val)) (kbd (cdr val)) ',func)))))))
+
 (defface spacemacs-transient-state-title-face
   `((t :inherit mode-line))
   "Face for title of transient states.")
@@ -118,7 +185,6 @@ used."
           (intern (format "spacemacs-%s-transient-state-add-bindings" name)))
          (remove-bindings
           (intern (format "spacemacs-%s-transient-state-remove-bindings" name)))
-         ;; TODO define this function
          (bindings (spacemacs/mplist-get props :bindings))
          (doc (or (plist-get props :doc) "\n"))
          (title (plist-get props :title))
@@ -131,7 +197,6 @@ used."
          (dyn-hint (plist-get props :dynamic-hint))
          (additional-docs (spacemacs/mplist-get props :additional-docs))
          (foreign-keys (plist-get props :foreign-keys))
-         ;; TODO define this function
          (bindkeys (spacemacs//create-key-binding-form props body-func)))
     `(progn
        (defvar ,props-var nil
@@ -144,8 +209,8 @@ used."
        (add-to-list ',props-var '(foreign-keys ,foreign-keys))
        (add-to-list ',props-var '(entry-sexp ,entry-sexp))
        (add-to-list ',props-var '(exit-sexp ,exit-sexp))
-       ;; TODO replace this with hooks maybe
-       (spacemacs/defer-until-after-user-config
+       ;; TODO replace this with hooks maybe : DONE
+       (add-hook after-init-hook
         '(lambda ()
            (eval
             (append

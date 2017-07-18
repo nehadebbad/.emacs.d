@@ -1,5 +1,3 @@
-(require 'core-variables)
-
 (defvar spacemacs-default-map (make-sparse-keymap)
   "Base keymap for all spacemacs leader key commands.")
 

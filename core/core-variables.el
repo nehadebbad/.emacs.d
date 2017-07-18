@@ -57,4 +57,7 @@ key sequence. Setting this variable is equivalent to setting
 (defvar dotspacemacs-show-transient-state-title t
   "If non nil show the titles of transient states.")
 
+(defvar dotspacemacs-show-transient-state-color-guide t
+  "If non nil show the color guide hint for transient state keys.")
+
 (provide 'core-variables)

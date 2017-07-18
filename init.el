@@ -1,25 +1,34 @@
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
 (package-initialize)
 
+;; Load these packages before anything else
 (require 'use-package)
 (require 'bind-key)
+(require 'hydra)
 
 ;; Load core modules
 (add-to-list 'load-path "~/.emacs.d/core/")
-(prefer-coding-system 'utf-8)
 
+;; Setup Solarized Theme
 (require 'core-ui)
+;; Variables used mostly for evil mode customization
+(require 'core-variables)
+;; Setup evil mode
+(require 'core-evil)
+;; Setup workspaces using persp-mode
 (require 'core-workspaces)
+;; Setup Ivy and Company
 (require 'core-search-and-completion)
-;; Vim like bindings in emacs
-(use-package hydra)
+;; Setup projectile
 (require 'core-project-management)
+;; Setup magit
 (require 'core-version-control)
+;; Editing preferences
 (require 'core-editing)
+;; Personal Keybindings
 (require 'core-keybindings)
+
+;; Prefer UTF-8 enconding
+(prefer-coding-system 'utf-8)
 
 ;; Set personal info
 (setq user-full-name "Suraj Kumar Reddy"
@@ -28,6 +37,7 @@
       calendar-longitude -78.4
       calendar-location-name "Hyderabad, IND")
 
+;; Add the anaconda bin dir for executables
 (add-to-list 'exec-path "~/anaconda2/bin/")
 
 ;; Some sensible defaults
@@ -96,7 +106,6 @@
 
 (setq org-ellipsis "↴")
 (setq org-src-window-setup 'current-window)
-
 
 ;; Process management
 (use-package prodigy
