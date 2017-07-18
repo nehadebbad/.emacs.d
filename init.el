@@ -12,6 +12,8 @@
 (require 'core-ui)
 ;; Variables used mostly for evil mode customization
 (require 'core-variables)
+;; Utility functions to set key bindings
+(require 'core-keybindings)
 ;; Setup evil mode
 (require 'core-evil)
 ;; Setup workspaces using persp-mode
@@ -24,8 +26,6 @@
 (require 'core-version-control)
 ;; Editing preferences
 (require 'core-editing)
-;; Personal Keybindings
-(require 'core-keybindings)
 
 ;; Prefer UTF-8 enconding
 (prefer-coding-system 'utf-8)

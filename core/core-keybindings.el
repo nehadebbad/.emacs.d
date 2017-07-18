@@ -1,11 +1,11 @@
-(defvar spacemacs-default-map (make-sparse-keymap)
-  "Base keymap for all spacemacs leader key commands.")
+(defvar my-default-map (make-sparse-keymap)
+  "Base keymap for all my leader key commands.")
 
 ;; TODO find out where this variable is used
-(defvar spacemacs/prefix-titles nil
+(defvar my-prefix-titles nil
   "alist for mapping command prefixes to long names.")
 
-(defun spacemacs/declare-prefix (prefix name &optional long-name)
+(defun my/declare-prefix (prefix name &optional long-name)
   "Declare a prefix PREFIX. PREFIX is a string describing a key
 sequence. NAME is a string used as the prefix command.
 LONG-NAME if given is stored in `spacemacs/prefix-titles'."
@@ -14,11 +14,11 @@ LONG-NAME if given is stored in `spacemacs/prefix-titles'."
          (full-prefix-lst (listify-key-sequence (kbd full-prefix))))
     ;; define the prefix command only if it does not already exist
     (unless long-name (setq long-name name))
-    (which-key-declare-prefixes
+    (which-key-add-key-based-replacements
       full-prefix (cons name long-name))))
-(put 'spacemacs/declare-prefix 'lisp-indent-function 'defun)
+(put 'my/declare-prefix 'lisp-indent-function 'defun)
 
-(defun spacemacs/declare-prefix-for-mode (mode prefix name &optional long-name)
+(defun my/declare-prefix-for-mode (mode prefix name &optional long-name)
   "Declare a prefix PREFIX. MODE is the mode in which this prefix command should
 be added. PREFIX is a string describing a key sequence. NAME is a symbol name
 used as the prefix command."
@@ -29,13 +29,13 @@ used as the prefix command."
                                     " " (substring prefix 1))))
     (unless long-name (setq long-name name))
     (let ((prefix-name (cons name long-name)))
-      (which-key-declare-prefixes-for-mode mode
+      (which-key-add-major-mode-key-based-replacements mode
         full-prefix prefix-name)
       (when (and is-major-mode-prefix dotspacemacs-major-mode-leader-key)
-        (which-key-declare-prefixes-for-mode mode major-mode-prefix prefix-name)))))
-(put 'spacemacs/declare-prefix-for-mode 'lisp-indent-function 'defun)
+        (which-key-add-major-mode-key-based-replacements mode major-mode-prefix prefix-name)))))
+(put 'my/declare-prefix-for-mode 'lisp-indent-function 'defun)
 
-(defun spacemacs/set-leader-keys (key def &rest bindings)
+(defun my/set-leader-keys (key def &rest bindings)
   "Add KEY and DEF as key bindings under
 `dotspacemacs-leader-key' and `dotspacemacs-emacs-leader-key'.
 KEY should be a string suitable for passing to `kbd', and it
@@ -50,26 +50,26 @@ pairs. For example,
    \"C-c\" 'command2
    \"bb\" 'command3\)"
   (while key
-    (define-key spacemacs-default-map (kbd key) def)
+    (define-key my-default-map (kbd key) def)
     (setq key (pop bindings) def (pop bindings))))
-(put 'spacemacs/set-leader-keys 'lisp-indent-function 'defun)
+(put 'my/set-leader-keys 'lisp-indent-function 'defun)
 
-(defalias 'evil-leader/set-key 'spacemacs/set-leader-keys)
+(defalias 'evil-leader/set-key 'set-leader-keys)
 
-(defun spacemacs//acceptable-leader-p (key)
+(defun my//acceptable-leader-p (key)
   "Return t if key is a string and non-empty."
   (and (stringp key) (not (string= key ""))))
 
-(defun spacemacs//init-leader-mode-map (mode map &optional minor)
+(defun my//init-leader-mode-map (mode map &optional minor)
   "Check for MAP-prefix. If it doesn't exist yet, use `bind-map'
 to create it and bind it to `dotspacemacs-major-mode-leader-key'
 and `dotspacemacs-major-mode-emacs-leader-key'. If MODE is a
 minor-mode, the third argument should be non nil."
   (let* ((prefix (intern (format "%s-prefix" map)))
-         (leader1 (when (spacemacs//acceptable-leader-p
+         (leader1 (when (my//acceptable-leader-p
                          dotspacemacs-major-mode-leader-key)
                     dotspacemacs-major-mode-leader-key))
-         (leader2 (when (spacemacs//acceptable-leader-p
+         (leader2 (when (my//acceptable-leader-p
                          dotspacemacs-leader-key)
                     (concat dotspacemacs-leader-key " m")))
          (leaders (delq nil (list leader1 leader2))))
@@ -83,37 +83,37 @@ minor-mode, the third argument should be non nil."
               :evil-states (normal motion visual evilified)))
           (boundp prefix)))))
 
-(defun spacemacs/set-leader-keys-for-major-mode (mode key def &rest bindings)
+(defun my/set-leader-keys-for-major-mode (mode key def &rest bindings)
   "Add KEY and DEF as key bindings under
 `dotspacemacs-major-mode-leader-key' and
 `dotspacemacs-major-mode-emacs-leader-key' for the major-mode
 MODE. MODE should be a quoted symbol corresponding to a valid
 major mode. The rest of the arguments are treated exactly like
 they are in `spacemacs/set-leader-keys'."
-  (let* ((map (intern (format "spacemacs-%s-map" mode))))
-    (when (spacemacs//init-leader-mode-map mode map)
+  (let* ((map (intern (format "my-%s-map" mode))))
+    (when (my//init-leader-mode-map mode map)
       (while key
         (define-key (symbol-value map) (kbd key) def)
         (setq key (pop bindings) def (pop bindings))))))
-(put 'spacemacs/set-leader-keys-for-major-mode 'lisp-indent-function 'defun)
+(put 'my/set-leader-keys-for-major-mode 'lisp-indent-function 'defun)
 
 (defalias
   'evil-leader/set-key-for-mode
-  'spacemacs/set-leader-keys-for-major-mode)
+  'my/set-leader-keys-for-major-mode)
 
-(defun spacemacs/set-leader-keys-for-minor-mode (mode key def &rest bindings)
+(defun my/set-leader-keys-for-minor-mode (mode key def &rest bindings)
   "Add KEY and DEF as key bindings under
 `dotspacemacs-major-mode-leader-key' and
 `dotspacemacs-major-mode-emacs-leader-key' for the minor-mode
 MODE. MODE should be a quoted symbol corresponding to a valid
 minor mode. The rest of the arguments are treated exactly like
 they are in `spacemacs/set-leader-keys'."
-  (let* ((map (intern (format "spacemacs-%s-map" mode))))
-    (when (spacemacs//init-leader-mode-map mode map t)
+  (let* ((map (intern (format "my-%s-map" mode))))
+    (when (my//init-leader-mode-map mode map t)
       (while key
         (define-key (symbol-value map) (kbd key) def)
         (setq key (pop bindings) def (pop bindings))))))
-(put 'spacemacs/set-leader-keys-for-minor-mode 'lisp-indent-function 'defun)
+(put 'my/set-leader-keys-for-minor-mode 'lisp-indent-function 'defun)
 
 
 (global-set-key (kbd "C-x C-q") 'save-buffers-kill-terminal)

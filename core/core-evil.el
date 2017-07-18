@@ -57,6 +57,19 @@
   (define-key evil-window-map (kbd "<left>") 'evil-window-left)
   (define-key evil-window-map (kbd "<right>") 'evil-window-right)
   (define-key evil-window-map (kbd "<up>") 'evil-window-up)
-  (define-key evil-window-map (kbd "<down>") 'evil-window-down))
+  (define-key evil-window-map (kbd "<down>") 'evil-window-down)
+  (my/set-leader-keys "re" 'evil-show-registers)
+
+  ;; motions keys for help buffers
+  ;; TODO check if these bindings reflect for helm.Do it when
+  ;; configuring helm
+  (evil-define-key 'motion help-mode-map (kbd "<escape>") 'quit-window)
+  (evil-define-key 'motion help-mode-map (kbd "<tab>") 'forward-button)
+  (evil-define-key 'motion help-mode-map (kbd "S-<tab>") 'backward-button)
+  (evil-define-key 'motion help-mode-map (kbd "]") 'help-go-forward)
+  (evil-define-key 'motion help-mode-map (kbd "gf") 'help-go-forward)
+  (evil-define-key 'motion help-mode-map (kbd "[") 'help-go-back)
+  (evil-define-key 'motion help-mode-map (kbd "gb") 'help-go-back)
+  (evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol))
 
 (provide 'core-evil)
