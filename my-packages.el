@@ -35,7 +35,8 @@
     diminish
     bind-map
     which-key
-    helm)
+    helm
+    paredit)
   "A list of packages to ensure are installed at launch.")
 
 (defun prelude-packages-installed-p ()
