@@ -94,6 +94,55 @@
 
   (define-key evil-normal-state-map (kbd "K") 'my/evil-smart-doc-lookup)
   (define-key evil-normal-state-map (kbd "gd") 'my/jump-to-definition)
-  (define-key evil-normal-state-map (kbd "gD") 'my/jump-to-definition-other-window))
+  (define-key evil-normal-state-map (kbd "gD") 'my/jump-to-definition-other-window)
+
+  ;; scrolling transient state
+  (my|define-transient-state scroll
+    :title "Scrolling Transient State"
+    :doc "
+ Buffer^^^^              Full page^^^^     Half page^^^^        Line/column^^^^
+ ──────^^^^───────────── ─────────^^^^──── ─────────^^^^─────── ───────────^^^^─────
+ [_<_/_>_] beginning/end [_f_/_b_] down/up [_J_/_K_] down/up    [_j_/_k_] down/up
+  ^ ^ ^ ^                 ^ ^ ^ ^          [_H_/_L_] left/right [_h_/_l_] left/right
+  ^ ^ ^ ^                 ^ ^ ^ ^          [_d_/_u_] down/up     ^ ^ ^ ^"
+    :bindings
+    ;; buffer
+    ("<" evil-goto-first-line)
+    (">" evil-goto-line)
+    ;; full page
+    ("f" evil-scroll-page-down)
+    ("b" evil-scroll-page-up)
+    ;; half page
+    ("d" evil-scroll-down)
+    ("u" evil-scroll-up)
+    ("J" evil-scroll-down)
+    ("K" evil-scroll-up)
+    ("H" evil-scroll-left)
+    ("L" evil-scroll-right)
+    ;; lines and columns
+    ("j" evil-scroll-line-down)
+    ("k" evil-scroll-line-up)
+    ("h" evil-scroll-column-left)
+    ("l" evil-scroll-column-right))
+
+  (my/set-leader-keys
+    ;; buffer
+    "N<" 'my/scroll-transient-state/evil-goto-first-line
+    "N>" 'my/scroll-transient-state/evil-goto-line
+    ;; full page
+    "Nf" 'mc/scroll-transient-state/evil-scroll-page-down
+    "Nb" 'mc/scroll-transient-state/evil-scroll-page-up
+    ;; half page
+    "Nd" 'my/scroll-transient-state/evil-scroll-down
+    "Nu" 'my/scroll-transient-state/evil-scroll-up
+    "NJ" 'my/scroll-transient-state/evil-scroll-down
+    "NK" 'my/scroll-transient-state/evil-scroll-up
+    "NH" 'my/scroll-transient-state/evil-scroll-left
+    "NL" 'my/scroll-transient-state/evil-scroll-right
+    ;; lines and columns
+    "Nj" 'my/scroll-transient-state/evil-scroll-line-down
+    "Nk" 'my/scroll-transient-state/evil-scroll-line-up
+    "Nh" 'my/scroll-transient-state/evil-scroll-column-left
+    "Nl" 'my/scroll-transient-state/evil-scroll-column-right))
 
 (provide 'core-evil)

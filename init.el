@@ -18,6 +18,8 @@
 (require 'core-keybindings)
 ;; Functions and macros for jumping around
 (require 'core-jump)
+;; Function and macros for transient states
+(require 'core-transient-state)
 ;; Setup evil mode
 (require 'core-evil)
 ;; Setup workspaces using persp-mode
