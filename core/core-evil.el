@@ -246,6 +246,198 @@
 
   ;; ignore repeat
   (evil-declare-ignore-repeat 'my/next-error)
-  (evil-declare-ignore-repeat 'my/previous-error))
+  (evil-declare-ignore-repeat 'my/previous-error)
+  (message "evil loaded"))
 
+(use-package hydra
+  :demand t
+  :config
+  (setq hydra-key-doc-function 'my//hydra-key-doc-function
+        hydra-head-format "[%s] "))
+
+(use-package which-key
+  :demand t
+  :config
+  (my|add-toggle which-key
+    :mode which-key-mode
+    :documentation
+    "Display a buffer with available key bindings."
+    :evil-leader "tK")
+
+  (my/set-leader-keys "hk" 'which-key-show-top-level)
+
+  ;; Needed to avoid nil variable error before update to recent which-key
+  (defvar which-key-replacement-alist nil)
+  ;; Replace rules for better naming of functions
+  (let ((new-descriptions
+         ;; being higher in this list means the replacement is applied later
+         '(
+           ("spacemacs/\\(.+\\)" . "\\1")
+           ("spacemacs/toggle-\\(.+\\)" . "\\1")
+           ("spacemacs/alternate-buffer" . "last buffer")
+           ("spacemacs/toggle-mode-line-\\(.+\\)" . "\\1")
+           ("avy-goto-word-or-subword-1" . "avy word")
+           ("shell-command" . "shell cmd")
+           ("spacemacs/default-pop-shell" . "open shell")
+           ("spacemacs/helm-project-smart-do-search-region-or-symbol" . "smart search w/input")
+           ("spacemacs/helm-project-smart-do-search" . "smart search")
+           ("spacemacs/search-project-auto-region-or-symbol" . "search project w/input")
+           ("spacemacs/search-project-auto" . "search project")
+           ("helm-descbinds" . "show keybindings")
+           ("sp-split-sexp" . "split sexp")
+           ("avy-goto-line" . "avy line")
+           ("universal-argument" . "universal arg")
+           ("er/expand-region" . "expand region")
+           ("helm-apropos" . "apropos")
+           ("spacemacs/toggle-hybrid-mode" . "hybrid (hybrid-mode)")
+           ("spacemacs/toggle-holy-mode" . "emacs (holy-mode)")
+           ("evil-lisp-state-\\(.+\\)" . "\\1")
+           ("spacemacs/\\(.+\\)-transient-state/\\(.+\\)" . "\\2")
+           ("spacemacs/\\(.+\\)-transient-state/body" . "\\1-transient-state")
+           ("helm-mini\\|ivy-switch-buffer" . "list-buffers")
+           ("spacemacs-layouts/non-restricted-buffer-list-\\(helm\\|ivy\\)" . "global-list-buffers"))))
+    (dolist (nd new-descriptions)
+      ;; ensure the target matches the whole string
+      (push (cons (cons nil (concat "\\`" (car nd) "\\'")) (cons nil (cdr nd)))
+            which-key-replacement-alist)))
+
+  ;; Group together sequence and identical key entries in the which-key popup
+  ;; SPC h k- Top-level bindings
+  ;; Remove spaces around the two dots ".."
+  (push '(("\\(.*\\)1 .. 9" . "digit-argument") .
+          ("\\11..9" . "digit-argument"))
+        which-key-replacement-alist)
+
+  ;; And remove the modifier key(s) before the last nr in the sequence
+  (push '(("\\(.*\\)C-0 .. C-5" . "digit-argument") .
+          ("\\1C-0..5" . "digit-argument"))
+        which-key-replacement-alist)
+
+  (push '(("\\(.*\\)C-7 .. C-9" . "digit-argument") .
+          ("\\1C-7..9" . "digit-argument"))
+        which-key-replacement-alist)
+
+  (push '(("\\(.*\\)C-M-0 .. C-M-9" . "digit-argument") .
+          ("\\1C-M-0..9" . "digit-argument"))
+        which-key-replacement-alist)
+
+  ;; Rename the entry for M-0 in the SPC h k Top-level bindings,
+  ;; and for 0 in the SPC- Spacemacs root
+  (push '(("\\(.*\\)0" . "winum-select-window-0-or-10") .
+          ("\\10" . "select window 0 or 10"))
+        which-key-replacement-alist)
+
+  ;; Rename the entry for M-1 in the SPC h k Top-level bindings,
+  ;; and for 1 in the SPC- Spacemacs root, to 1..9
+  (push '(("\\(.*\\)1" . "winum-select-window-1") .
+          ("\\11..9" . "select window 1..9"))
+        which-key-replacement-alist)
+
+  ;; Hide the entries for M-[2-9] in the SPC h k Top-level bindings,
+  ;; and for [2-9] in the SPC- Spacemacs root
+  (push '((nil . "winum-select-window-[2-9]") . t)
+        which-key-replacement-alist)
+
+  ;; SPC- Spacemacs root
+  ;; Combine the ` (backtick) and ² (superscript 2) key entries
+  (push '(("\\(.*\\)`" . "winum-select-window-by-number") .
+          ("\\1`,²" . "select window by number"))
+        which-key-replacement-alist)
+
+  ;; hide the "² -> winum-select-window-by-number" entry
+  (push '(("\\(.*\\)²" . nil) . t)
+        which-key-replacement-alist)
+
+  ;; SPC b- buffers
+  ;; rename the buffer-to-window-1 entry, to 1..9
+  (push '(("\\(.*\\)1" . "buffer-to-window-1") .
+          ("\\11..9" . "buffer to window 1..9"))
+        which-key-replacement-alist)
+
+  ;; hide the "[2-9] -> buffer-to-window-[2-9]" entries
+  (push '((nil . "buffer-to-window-[2-9]") . t)
+        which-key-replacement-alist)
+
+  ;; SPC k- lisp
+  ;; rename "1 .. 9 -> digit-argument" to "1..9 -> digit-argument"
+  (push '(("\\(.*\\)1 .. 9" . "evil-lisp-state-digit-argument") .
+          ("\\11..9" . "digit-argument"))
+        which-key-replacement-alist)
+
+  ;; SPC x i- inflection
+  ;; rename "k -> string-inflection-kebab-case"
+  ;; to "k,- -> string-inflection-kebab-case"
+  (push '(("\\(.*\\)k" . "string-inflection-kebab-case") .
+          ("\\1k,-" . "string-inflection-kebab-case"))
+        which-key-replacement-alist)
+
+  ;; hide the "- -> string-inflection-kebab-case" entry
+  (push '(("\\(.*\\)-" . "string-inflection-kebab-case") . t)
+        which-key-replacement-alist)
+
+  ;; rename "u -> string-inflection-underscore"
+  ;; to "u,_ -> string-inflection-underscore"
+  (push '(("\\(.*\\)u" . "string-inflection-underscore") .
+          ("\\1u,_" . "string-inflection-underscore"))
+        which-key-replacement-alist)
+
+  ;; hide the "_ -> string-inflection-underscore" entry
+  (push '(("\\(.*\\)_" . "string-inflection-underscore") . t)
+        which-key-replacement-alist)
+
+  ;; C-c C-w-
+  ;; rename the eyebrowse-switch-to-window-config-0 entry, to 0..9
+  (push '(("\\(.*\\)0" . "eyebrowse-switch-to-window-config-0") .
+          ("\\10..9" . "eyebrowse-switch-to-window-config-0..9"))
+        which-key-replacement-alist)
+
+  ;; hide the "[1-9] -> eyebrowse-switch-to-window-config-[1-9]" entries
+  (push '((nil . "eyebrowse-switch-to-window-config-[1-9]") . t)
+        which-key-replacement-alist)
+
+  ;; Combine the c and C-c key entries
+  (push '(("\\(.*\\)C-c C-w c" . "eyebrowse-create-window-config") .
+          ("\\1c,C-c" . "eyebrowse-create-window-config"))
+        which-key-replacement-alist)
+
+  ;; hide the "C-c -> eyebrowse-create-window-config" entry
+  (push '(("\\(.*\\)C-c C-w C-c" . "eyebrowse-create-window-config") . t)
+          which-key-replacement-alist)
+
+  ;; C-c C-d-
+  ;; Combine the d and C-d key entries
+  (push '(("\\(.*\\)C-c C-d d" . "elisp-slime-nav-describe-elisp-thing-at-point") .
+          ("\\1d,C-d" . "elisp-slime-nav-describe-elisp-thing-at-point"))
+        which-key-replacement-alist)
+
+  ;; hide the "C-d -> elisp-slime-nav-describe-elisp-thing-at-point" entry
+  (push '(("\\(.*\\)C-c C-d C-d" . "elisp-slime-nav-describe-elisp-thing-at-point") . t)
+        which-key-replacement-alist)
+
+  (dolist (leader-key `(,dotspacemacs-leader-key))
+    (which-key-add-key-based-replacements
+      (concat leader-key " m")    "major mode commands"))
+
+  (which-key-add-key-based-replacements
+    dotspacemacs-leader-key '("root" . "Spacemacs root")
+    (concat dotspacemacs-leader-key " m")
+    '("major-mode-cmd" . "Major mode commands"))
+
+  ;; disable special key handling for spacemacs, since it can be
+  ;; disorienting if you don't understand it
+  (pcase dotspacemacs-which-key-position
+    (`right (which-key-setup-side-window-right))
+    (`bottom (which-key-setup-side-window-bottom))
+    (`right-then-bottom (which-key-setup-side-window-right-bottom)))
+
+  (setq which-key-special-keys nil
+        which-key-use-C-h-for-paging t
+        which-key-prevent-C-h-from-cycling t
+        which-key-echo-keystrokes 0.02
+        which-key-max-description-length 32
+        which-key-sort-order 'which-key-key-order-alpha
+        which-key-idle-delay dotspacemacs-which-key-delay
+        which-key-allow-evil-operators t)
+
+  (which-key-mode))
 (provide 'core-evil)

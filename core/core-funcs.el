@@ -37,6 +37,11 @@ Example: (evil-map visual \"<\" \"<gv\")"
                    (execute-kbd-macro ,(substring seq 1)))
               (execute-kbd-macro ,seq)))))))
 
+(defun my//hydra-key-doc-function (key key-width doc doc-width)
+  "Custom hint documentation format for keys."
+  (format (format "[%%%ds] %%%ds" key-width (- -1 doc-width))
+          key doc))
+
 (defmacro my|define-text-object (key name start end)
   "Define a text object and a surround pair.
 START and END are strings (not regular expressions) that define

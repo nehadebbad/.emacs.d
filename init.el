@@ -3,7 +3,6 @@
 ;; Load these packages before anything else
 (require 'use-package)
 (require 'bind-key)
-(require 'hydra)
 
 ;; Load core modules
 (add-to-list 'load-path "~/.emacs.d/core/")
@@ -20,6 +19,8 @@
 (require 'core-jump)
 ;; Function and macros for transient states
 (require 'core-transient-state)
+;; Macro for toggles
+(require 'core-toggle)
 ;; Setup evil mode
 (require 'core-evil)
 ;; Setup workspaces using persp-mode
