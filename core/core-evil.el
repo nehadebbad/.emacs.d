@@ -8,7 +8,7 @@
 (use-package bind-map
   :demand t
   :config
-  (bind-map spacemacs-default-map
+  (bind-map my-default-map
     :prefix-cmd spacemacs-cmds
     :evil-keys (dotspacemacs-leader-key)
     :override-minor-modes t
