@@ -143,6 +143,60 @@
     "Nj" 'my/scroll-transient-state/evil-scroll-line-down
     "Nk" 'my/scroll-transient-state/evil-scroll-line-up
     "Nh" 'my/scroll-transient-state/evil-scroll-column-left
-    "Nl" 'my/scroll-transient-state/evil-scroll-column-right))
+    "Nl" 'my/scroll-transient-state/evil-scroll-column-right)
+
+  ;; pasting transient-state
+  (evil-define-command my//transient-state-0 ()
+    :keep-visual t
+    :repeat nil
+    (interactive)
+    (if current-prefix-arg
+        (progn
+          (setq this-command #'digit-argument)
+          (call-interactively #'digit-argument))
+      (setq this-command #'evil-beginning-of-line
+            hydra-deactivate t)
+      (call-interactively #'evil-beginning-of-line)))
+
+  (my|define-transient-state paste
+    :title "Pasting Transient State"
+    :doc "\n[%s(length kill-ring-yank-pointer)/%s(length kill-ring)] \
+ [_C-j_/_C-k_] cycles through yanked text, [_p_/_P_] pastes the same text \
+ above or below. Anything else exits."
+    :bindings
+    ("C-j" evil-paste-pop)
+    ("C-k" evil-paste-pop-next)
+    ("p" evil-paste-after)
+    ("P" evil-paste-before)
+    ("0" my//transient-state-0))
+
+  (when dotspacemacs-enable-paste-transient-state
+    (define-key evil-normal-state-map
+      "p" 'my/paste-transient-state/evil-paste-after)
+    (define-key evil-normal-state-map
+      "P" 'my/paste-transient-state/evil-paste-before))
+
+  ;; fold transient state
+  (when (eq 'evil dotspacemacs-folding-method)
+    (my|define-transient-state fold
+      :title "Code Fold Transient State"
+      :doc "
+ Close^^          Open^^              Toggle^^             Other^^
+ ───────^^──────  ─────^^───────────  ─────^^────────────  ─────^^───
+ [_c_] at point   [_o_] at point      [_a_] around point   [_q_] quit
+ ^^               [_O_] recursively   ^^
+ [_m_] all        [_r_] all"
+      :foreign-keys run
+      :bindings
+      ("a" evil-toggle-fold)
+      ("c" evil-close-fold)
+      ("o" evil-open-fold)
+      ("O" evil-open-fold-rec)
+      ("r" evil-open-folds)
+      ("m" evil-close-folds)
+      ("q" nil :exit t)
+      ("C-g" nil :exit t)
+      ("<SPC>" nil :exit t)))
+  (my/set-leader-keys "z." 'my/fold-transient-state/body))
 
 (provide 'core-evil)

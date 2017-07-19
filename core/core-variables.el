@@ -60,6 +60,13 @@ key sequence. Setting this variable is equivalent to setting
 (defvar dotspacemacs-show-transient-state-color-guide t
   "If non nil show the color guide hint for transient state keys.")
 
+(defvar dotspacemacs-enable-paste-transient-state nil
+  "If non nil the paste transient-state is enabled. While enabled pressing `p`
+several times cycle between the kill ring content.'")
+
+(defvar dotspacemacs-folding-method 'evil
+  "Code folding method. Possible values are `evil' and `origami'.")
+
 (defvar my--indent-variable-alist
   ;; Note that derived modes must come before their sources
   '(((awk-mode c-mode c++-mode java-mode groovy-mode
