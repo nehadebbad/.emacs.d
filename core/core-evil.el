@@ -1,3 +1,9 @@
+;; Load async
+(use-package async
+  :demand t
+  :config
+  (message "async loaded"))
+
 ;; Configure bind-map
 (use-package bind-map
   :demand t
@@ -70,6 +76,24 @@
   (evil-define-key 'motion help-mode-map (kbd "gf") 'help-go-forward)
   (evil-define-key 'motion help-mode-map (kbd "[") 'help-go-back)
   (evil-define-key 'motion help-mode-map (kbd "gb") 'help-go-back)
-  (evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol))
+  (evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol)
+  (setq-default evil-shift-width 2)
+  (add-hook 'after-change-major-mode-hook 'my//set-evil-shift-width)
+
+  ;; Keep the region active when shifting
+  (when dotspacemacs-retain-visual-state-on-shift
+    (evil-map visual "<" "<gv")
+    (evil-map visual ">" ">gv"))
+
+  ;; move selection up and down
+  (when dotspacemacs-visual-line-move-text
+    (define-key evil-visual-state-map "J" (concat ":m '>+1" (kbd "RET") "gv=gv"))
+    (define-key evil-visual-state-map "K" (concat ":m '<-2" (kbd "RET") "gv=gv")))
+
+  (evil-ex-define-cmd "enew" 'my/new-empty-buffer)
+
+  (define-key evil-normal-state-map (kbd "K") 'my/evil-smart-doc-lookup)
+  (define-key evil-normal-state-map (kbd "gd") 'my/jump-to-definition)
+  (define-key evil-normal-state-map (kbd "gD") 'my/jump-to-definition-other-window))
 
 (provide 'core-evil)

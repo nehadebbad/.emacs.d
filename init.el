@@ -12,8 +12,12 @@
 (require 'core-ui)
 ;; Variables used mostly for evil mode customization
 (require 'core-variables)
-;; Utility functions to set key bindings
+;; Utility functions and macros
+(require 'core-funcs)
+;; Custom functions to set key bindings
 (require 'core-keybindings)
+;; Functions and macros for jumping around
+(require 'core-jump)
 ;; Setup evil mode
 (require 'core-evil)
 ;; Setup workspaces using persp-mode
