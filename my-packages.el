@@ -40,11 +40,11 @@
     async)
   "A list of packages to ensure are installed at launch.")
 
-(defun prelude-packages-installed-p ()
-  "Check if all packages in `prelude-packages' are installed."
+(defun my-packages-installed-p ()
+  "Check if all packages in `my-packages' are installed."
   (every #'package-installed-p my-packages))
 
-(defun prelude-require-package (package)
+(defun my-require-package (package)
   "Install PACKAGE unless already installed."
   (unless (memq package my-packages)
     (add-to-list 'my-packages package))
@@ -53,17 +53,17 @@
     (package-install package)
     (message "Package %s installed" package)))
 
-(defun prelude-require-packages (packages)
+(defun my-require-packages (packages)
   "Ensure PACKAGES are installed.
 Missing packages are installed automatically."
-  (mapc #'prelude-require-package packages))
+  (mapc #'my-require-package packages))
 
-(defun prelude-install-packages ()
-  "Install all packages listed in `prelude-packages'."
-  (unless (prelude-packages-installed-p)
+(defun my-install-packages ()
+  "Install all packages listed in `my-packages'."
+  (unless (my-packages-installed-p)
     ;; check for new packages (package versions)
-    (message "%s" "Emacs Prelude is now refreshing its package database...")
+    (message "%s" "Emacs is now refreshing its package database...")
     (package-refresh-contents)
     (message "%s" " done.")
     ;; install the missing packages
-    (prelude-require-packages my-packages)))
+    (my-require-packages my-packages)))

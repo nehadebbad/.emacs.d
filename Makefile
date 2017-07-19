@@ -3,4 +3,4 @@ EMACS_FLAGS=--eval '(setq user-emacs-directory default-directory)' -l my-package
 EMACS=emacs --batch $(EMACS_FLAGS)
 
 install: my-packages.el
-	@$(EMACS) -f prelude-install-packages
+	@$(EMACS) -f my-install-packages

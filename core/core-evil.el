@@ -253,7 +253,8 @@
   :demand t
   :config
   (setq hydra-key-doc-function 'my//hydra-key-doc-function
-        hydra-head-format "[%s] "))
+        hydra-head-format "[%s] ")
+  (message "hydra loaded"))
 
 (use-package which-key
   :demand t
@@ -439,5 +440,6 @@
         which-key-idle-delay dotspacemacs-which-key-delay
         which-key-allow-evil-operators t)
 
-  (which-key-mode))
+  (which-key-mode)
+  (message "which-key loaded"))
 (provide 'core-evil)
