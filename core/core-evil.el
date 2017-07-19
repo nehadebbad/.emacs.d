@@ -224,6 +224,28 @@
   (define-key evil-inner-text-objects-map "g" 'evil-inner-buffer)
 
   ;; turn off evil in corelv buffers
-  (push '("\\*LV\\*") evil-buffer-regexps))
+  (push '("\\*LV\\*") evil-buffer-regexps)
+
+  ;; replace `dired-goto-file' with `helm-find-files', since `helm-find-files'
+  ;; can do the same thing and with fuzzy matching and other features.
+  (with-eval-after-load 'dired
+    ;; TODO define this function when configuring helm
+    (evil-define-key 'normal dired-mode-map "J" 'my/helm-find-files)
+    (define-key dired-mode-map "j" 'my/helm-find-files)
+    (evil-define-key 'normal dired-mode-map (kbd dotspacemacs-leader-key)
+      my-default-map))
+
+  ;; Define history commands for comint
+  (when (eq dotspacemacs-editing-style 'vim)
+    (evil-define-key 'insert comint-mode-map
+      (kbd "C-k") 'comint-previous-input
+      (kbd "C-j") 'comint-next-input))
+  (evil-define-key 'normal comint-mode-map
+    (kbd "C-k") 'comint-previous-input
+    (kbd "C-j") 'comint-next-input)
+
+  ;; ignore repeat
+  (evil-declare-ignore-repeat 'my/next-error)
+  (evil-declare-ignore-repeat 'my/previous-error))
 
 (provide 'core-evil)

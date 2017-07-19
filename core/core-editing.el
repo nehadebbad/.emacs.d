@@ -105,6 +105,12 @@
   (add-hook 'prog-mode-hook #'smartparens-mode)
   :config
   (require 'smartparens-config)
+  ;; TODO check this
+  (defadvice evil-delete-backward-char-and-join
+        (around spacemacs/evil-delete-backward-char-and-join activate)
+      (if (bound-and-true-p smartparens-strict-mode)
+          (call-interactively 'sp-backward-delete-char)
+        ad-do-it))
   (message "smartparens loaded"))
 
 ;; Treat terms in camel case as seprate words globally

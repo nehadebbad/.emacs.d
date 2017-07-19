@@ -37,23 +37,6 @@ Example: (evil-map visual \"<\" \"<gv\")"
                    (execute-kbd-macro ,(substring seq 1)))
               (execute-kbd-macro ,seq)))))))
 
-(defun my/new-empty-buffer ()
-  "Create a new buffer called untitled(<n>)"
-  (interactive)
-  (let ((newbuf (generate-new-buffer-name "untitled")))
-    (switch-to-buffer newbuf)))
-
-(defun my/evil-smart-doc-lookup ()
-  "Version of `evil-lookup' that attempts to use
-        the mode specific goto-definition binding,
-        i.e. `SPC m h h`, to lookup the source of the definition,
-        while falling back to `evil-lookup'"
-  (interactive)
-  (let ((binding (key-binding (kbd (concat dotspacemacs-leader-key " mhh")))))
-    (if (commandp binding)
-        (call-interactively binding)
-      (evil-lookup))))
-
 (defmacro my|define-text-object (key name start end)
   "Define a text object and a surround pair.
 START and END are strings (not regular expressions) that define
@@ -81,4 +64,48 @@ START-REGEXP and END-REGEXP are the boundaries of the text object."
          (evil-select-paren ,start-regexp ,end-regexp beg end type count t))
        (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
        (define-key evil-outer-text-objects-map ,key (quote ,outer-name)))))
+
+;; Utility functions or functions that change the default behaviour of existing functions
+(defun my/new-empty-buffer ()
+  "Create a new buffer called untitled(<n>)"
+  (interactive)
+  (let ((newbuf (generate-new-buffer-name "untitled")))
+    (switch-to-buffer newbuf)))
+
+(defun my/evil-smart-doc-lookup ()
+  "Version of `evil-lookup' that attempts to use
+        the mode specific goto-definition binding,
+        i.e. `SPC m h h`, to lookup the source of the definition,
+        while falling back to `evil-lookup'"
+  (interactive)
+  (let ((binding (key-binding (kbd (concat dotspacemacs-leader-key " mhh")))))
+    (if (commandp binding)
+        (call-interactively binding)
+      (evil-lookup))))
+
+(defun my/error-delegate ()
+  "Decide which error API to delegate to.
+Delegates to flycheck if it is enabled and the next-error buffer
+is not visible. Otherwise delegates to regular Emacs next-error."
+  (if (and (bound-and-true-p flycheck-mode)
+           (let ((buf (ignore-errors (next-error-find-buffer))))
+             (not (and buf (get-buffer-window buf)))))
+      'flycheck
+    'emacs))
+
+(defun my/next-error (&optional n reset)
+  "Dispatch to flycheck or standard emacs error."
+  (interactive "P")
+  (let ((sys (my/error-delegate)))
+    (cond
+     ((eq 'flycheck sys) (call-interactively 'flycheck-next-error))
+     ((eq 'emacs sys) (call-interactively 'next-error)))))
+
+(defun my/previous-error (&optional n reset)
+  "Dispatch to flycheck or standard emacs error."
+  (interactive "P")
+  (let ((sys (my/error-delegate)))
+    (cond
+     ((eq 'flycheck sys) (call-interactively 'flycheck-previous-error))
+     ((eq 'emacs sys) (call-interactively 'previous-error)))))
 (provide 'core-funcs)
