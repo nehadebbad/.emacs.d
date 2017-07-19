@@ -197,6 +197,33 @@
       ("q" nil :exit t)
       ("C-g" nil :exit t)
       ("<SPC>" nil :exit t)))
-  (my/set-leader-keys "z." 'my/fold-transient-state/body))
+  (my/set-leader-keys "z." 'my/fold-transient-state/body)
+
+  ;; define text objects
+  (my|define-text-object "$" "dollar" "$" "$")
+  (my|define-text-object "*" "star" "*" "*")
+  (my|define-text-object "8" "block-star" "/*" "*/")
+  (my|define-text-object "|" "bar" "|" "|")
+  (my|define-text-object "%" "percent" "%" "%")
+  (my|define-text-object "/" "slash" "/" "/")
+  (my|define-text-object "_" "underscore" "_" "_")
+  (my|define-text-object "-" "hyphen" "-" "-")
+  (my|define-text-object "~" "tilde" "~" "~")
+  (my|define-text-object "=" "equal" "=" "=")
+  (my|define-text-object "«" "double-angle-bracket" "«" "»")
+  (my|define-text-object "｢" "corner-bracket" "｢" "｣")
+  (my|define-text-object "‘" "single-quotation-mark" "‘" "’")
+  (my|define-text-object "“" "double-quotation-mark" "“" "”")
+  (evil-define-text-object evil-pasted (count &rest args)
+    (list (save-excursion (evil-goto-mark ?\[) (point))
+          (save-excursion (evil-goto-mark ?\]) (point))))
+  (define-key evil-inner-text-objects-map "P" 'evil-pasted)
+  ;; define text-object for entire buffer
+  (evil-define-text-object evil-inner-buffer (count &optional beg end type)
+    (list (point-min) (point-max)))
+  (define-key evil-inner-text-objects-map "g" 'evil-inner-buffer)
+
+  ;; turn off evil in corelv buffers
+  (push '("\\*LV\\*") evil-buffer-regexps))
 
 (provide 'core-evil)

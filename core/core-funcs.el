@@ -54,4 +54,31 @@ Example: (evil-map visual \"<\" \"<gv\")"
         (call-interactively binding)
       (evil-lookup))))
 
+(defmacro my|define-text-object (key name start end)
+  "Define a text object and a surround pair.
+START and END are strings (not regular expressions) that define
+the boundaries of the text object."
+  `(progn
+     (my|define-text-object-regexp ,key ,name
+                                          ,(regexp-quote start)
+                                          ,(regexp-quote end))
+     (with-eval-after-load 'evil-surround
+       (push (cons (string-to-char ,key)
+                   (if ,end
+                       (cons ,start ,end)
+                     ,start))
+             evil-surround-pairs-alist))))
+
+(defmacro my|define-text-object-regexp (key name start-regexp end-regexp)
+  "Define a text object.
+START-REGEXP and END-REGEXP are the boundaries of the text object."
+  (let ((inner-name (make-symbol (concat "evil-inner-" name)))
+        (outer-name (make-symbol (concat "evil-outer-" name))))
+    `(progn
+       (evil-define-text-object ,inner-name (count &optional beg end type)
+         (evil-select-paren ,start-regexp ,end-regexp beg end type count nil))
+       (evil-define-text-object ,outer-name (count &optional beg end type)
+         (evil-select-paren ,start-regexp ,end-regexp beg end type count t))
+       (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
+       (define-key evil-outer-text-objects-map ,key (quote ,outer-name)))))
 (provide 'core-funcs)
