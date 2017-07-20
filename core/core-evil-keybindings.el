@@ -344,6 +344,246 @@
   :documentation "Enable semantic-stickyfunc globally."
   :evil-leader "T C-S")
 
+;; ---------------------------------------------------------------------------
+;; Transient-states
+;; ---------------------------------------------------------------------------
 
+;; Buffer transient state
+
+(myy|define-transient-state buffer
+  :title "Buffer Selection Transient State"
+  :doc (concat "
+ [_C-1_.._C-9_] goto nth window            [_n_]^^   next buffer
+ [_1_.._9_]     move buffer to nth window  [_N_/_p_] previous buffer
+ [_M-1_.._M-9_] swap buffer w/ nth window  [_d_]^^   kill buffer
+ ^^^^                                      [_q_]^^   quit")
+  :bindings
+  ("n" next-buffer)
+  ("N" previous-buffer)
+  ("p" previous-buffer)
+  ("d" my/kill-this-buffer)
+  ("q" nil :exit t)
+  ("1" move-buffer-window-no-follow-1)
+  ("2" move-buffer-window-no-follow-2)
+  ("3" move-buffer-window-no-follow-3)
+  ("4" move-buffer-window-no-follow-4)
+  ("5" move-buffer-window-no-follow-5)
+  ("6" move-buffer-window-no-follow-6)
+  ("7" move-buffer-window-no-follow-7)
+  ("8" move-buffer-window-no-follow-8)
+  ("9" move-buffer-window-no-follow-9)
+  ("M-1" swap-buffer-window-no-follow-1)
+  ("M-2" swap-buffer-window-no-follow-2)
+  ("M-3" swap-buffer-window-no-follow-3)
+  ("M-4" swap-buffer-window-no-follow-4)
+  ("M-5" swap-buffer-window-no-follow-5)
+  ("M-6" swap-buffer-window-no-follow-6)
+  ("M-7" swap-buffer-window-no-follow-7)
+  ("M-8" swap-buffer-window-no-follow-8)
+  ("M-9" swap-buffer-window-no-follow-9)
+  ("C-1" winum-select-window-1)
+  ("C-2" winum-select-window-2)
+  ("C-3" winum-select-window-3)
+  ("C-4" winum-select-window-4)
+  ("C-5" winum-select-window-5)
+  ("C-6" winum-select-window-6)
+  ("C-7" winum-select-window-7)
+  ("C-8" winum-select-window-8)
+  ("C-9" winum-select-window-9))
+(my/set-leader-keys "b." 'my/buffer-transient-state/body)
+
+;; end of Buffer transient state
+
+;; Window Manipulation Transient State
+
+(defun my/shrink-window-horizontally (delta)
+  "Wrap `my/shrink-window-horizontally'."
+  (interactive "p")
+  (shrink-window delta t))
+
+(defun my/shrink-window (delta)
+  "Wrap `my/shrink-window'."
+  (interactive "p")
+  (shrink-window delta))
+
+(defun my/enlarge-window (delta)
+  "Wrap `my/enlarge-window'."
+  (interactive "p")
+  (enlarge-window delta))
+
+(defun my/enlarge-window-horizontally (delta)
+  "Wrap `my/enlarge-window-horizontally'."
+  (interactive "p")
+  (enlarge-window delta t))
+
+(my|define-transient-state window-manipulation
+  :title "Window Manipulation Transient State"
+  :doc (concat "
+ Select^^^^               Move^^^^              Split^^               Resize^^             Other^^
+ ──────^^^^─────────────  ────^^^^────────────  ─────^^─────────────  ──────^^───────────  ─────^^──────────────────
+ [_j_/_k_]  down/up       [_J_/_K_] down/up     [_s_] vertical        [_[_] shrink horiz   [_u_] restore prev layout
+ [_h_/_l_]  left/right    [_H_/_L_] left/right  [_S_] verti & follow  [_]_] enlarge horiz  [_U_] restore next layout
+ [_0_.._9_] window 0..9   [_r_]^^   rotate fwd  [_v_] horizontal      [_{_] shrink verti   [_d_] close current
+ [_w_]^^    other window  [_R_]^^   rotate bwd  [_V_] horiz & follow  [_}_] enlarge verti  [_D_] close other
+ [_o_]^^    other frame   ^^^^                  ^^                    ^^                   "
+               (if (require 'golden-ratio nil t)
+                   "[_g_] golden-ratio %`golden-ratio-mode"
+                 "")
+               "\n ^^^^                     ^^^^                  ^^                    ^^                   [_q_] quit")
+  :bindings
+  ("q" nil :exit t)
+  ("0" winum-select-window-0)
+  ("1" winum-select-window-1)
+  ("2" winum-select-window-2)
+  ("3" winum-select-window-3)
+  ("4" winum-select-window-4)
+  ("5" winum-select-window-5)
+  ("6" winum-select-window-6)
+  ("7" winum-select-window-7)
+  ("8" winum-select-window-8)
+  ("9" winum-select-window-9)
+  ("-" split-window-below-and-focus)
+  ("/" split-window-right-and-focus)
+  ("[" my/shrink-window-horizontally)
+  ("]" my/enlarge-window-horizontally)
+  ("{" my/shrink-window)
+  ("}" my/enlarge-window)
+  ("d" delete-window)
+  ("D" delete-other-windows)
+  ("h" evil-window-left)
+  ("<left>" evil-window-left)
+  ("j" evil-window-down)
+  ("<down>" evil-window-down)
+  ("k" evil-window-up)
+  ("<up>" evil-window-up)
+  ("l" evil-window-right)
+  ("<right>" evil-window-right)
+  ("H" evil-window-move-far-left)
+  ("<S-left>" evil-window-move-far-left)
+  ("J" evil-window-move-very-bottom)
+  ("<S-down>" evil-window-move-very-bottom)
+  ("K" evil-window-move-very-top)
+  ("<S-up>" evil-window-move-very-top)
+  ("L" evil-window-move-far-right)
+  ("<S-right>" evil-window-move-far-right)
+  ("o" other-frame)
+  ("r" my/rotate-windows-forward)
+  ("R" my/rotate-windows-backward)
+  ("s" split-window-below)
+  ("S" split-window-below-and-focus)
+  ("u" winner-undo)
+  ("U" winner-redo)
+  ("v" split-window-right)
+  ("V" split-window-right-and-focus)
+  ("w" other-window))
+(my/set-leader-keys "w."
+  'my/window-manipulation-transient-state/body)
+
+;; end of Window Manipulation Transient State
+
+;; text Manipulation Transient State
+
+(defun my/scale-up-or-down-font-size (direction)
+  "Scale the font. If DIRECTION is positive or zero the font is scaled up,
+otherwise it is scaled down."
+  (interactive)
+  (let ((scale 0.5))
+    (if (eq direction 0)
+        (text-scale-set 0)
+      (if (< direction 0)
+          (text-scale-decrease scale)
+        (text-scale-increase scale)))))
+
+(defun my/scale-up-font ()
+  "Scale up the font."
+  (interactive)
+  (my/scale-up-or-down-font-size 1))
+
+(defun my/scale-down-font ()
+  "Scale up the font."
+  (interactive)
+  (my/scale-up-or-down-font-size -1))
+
+(defun my/reset-font-size ()
+  "Reset the font size."
+  (interactive)
+  (my/scale-up-or-down-font-size 0))
+
+(my|define-transient-state scale-font
+  :title "Font Scaling Transient State"
+  :doc "\n[_+_/_=_] scale up [_-_] scale down [_0_] reset font [_q_] quit"
+  :bindings
+  ("+" my/scale-up-font)
+  ("=" my/scale-up-font)
+  ("-" my/scale-down-font)
+  ("0" my/reset-font-size)
+  ("q" nil :exit t))
+(my/set-leader-keys "zx" 'my/scale-font-transient-state/body)
+
+;; end of Text Manipulation Transient State
+
+;; Transparency transient-state
+
+(defun my/toggle-transparency (&optional frame)
+  "Toggle between transparent and opaque state for FRAME.
+If FRAME is nil, it defaults to the selected frame."
+  (interactive)
+  (let ((alpha (frame-parameter frame 'alpha))
+        (dotfile-setting (cons dotspacemacs-active-transparency
+                               dotspacemacs-inactive-transparency)))
+    (if (equal alpha dotfile-setting)
+        (my/disable-transparency frame)
+      (my/enable-transparency frame dotfile-setting))))
+
+(defun my/enable-transparency (&optional frame alpha)
+  "Enable transparency for FRAME.
+If FRAME is nil, it defaults to the selected frame.
+ALPHA is a pair of active and inactive transparency values. The
+default value for ALPHA is based on
+`dotspacemacs-active-transparency' and
+`dotspacemacs-inactive-transparency'."
+  (interactive)
+  (let ((alpha-setting (or alpha
+                           (cons dotspacemacs-active-transparency
+                                 dotspacemacs-inactive-transparency))))
+    (set-frame-parameter frame 'alpha alpha-setting)))
+
+(defun my/disable-transparency (&optional frame)
+  "Disable transparency for FRAME.
+If FRAME is nil, it defaults to the selected frame."
+  (interactive)
+  (set-frame-parameter frame 'alpha '(100 . 100)))
+
+(defun my/increase-transparency (&optional frame)
+  "Increase transparency for FRAME.
+If FRAME is nil, it defaults to the selected frame."
+  (interactive)
+  (let* ((current-alpha (or (car (frame-parameter frame 'alpha)) 100))
+         (increased-alpha (- current-alpha 5)))
+    (when (>= increased-alpha frame-alpha-lower-limit)
+      (set-frame-parameter frame 'alpha
+                           (cons increased-alpha increased-alpha)))))
+
+(defun my/decrease-transparency (&optional frame)
+  "Decrease transparency for FRAME.
+If FRAME is nil, it defaults to the selected frame."
+  (interactive)
+  (let* ((current-alpha (or (car (frame-parameter frame 'alpha)) 100))
+         (decreased-alpha (+ current-alpha 5)))
+    (when (<= decreased-alpha 100)
+      (set-frame-parameter frame 'alpha
+                           (cons decreased-alpha decreased-alpha)))))
+
+(my|define-transient-state scale-transparency
+  :title "Frame Transparency Transient State"
+  :doc "\n[_+_/_=_] increase transparency [_-_] decrease [_T_] toggle [_q_] quit"
+  :bindings
+  ("+" my/increase-transparency)
+  ("=" my/increase-transparency)
+  ("-" my/decrease-transparency)
+  ("T" my/toggle-transparency)
+  ("q" nil :exit t))
+(my/set-leader-keys "TT"
+  'my/scale-transparency-transient-state/my/toggle-transparency)
 
 (provide 'core-evil-keybindings)
