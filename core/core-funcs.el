@@ -72,7 +72,7 @@ START-REGEXP and END-REGEXP are the boundaries of the text object."
        (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
        (define-key evil-outer-text-objects-map ,key (quote ,outer-name)))))
 
-(defun spacemacs//run-local-vars-mode-hook ()
+(defun my//run-local-vars-mode-hook ()
   "Run a hook for the major-mode after the local variables have been processed."
   (run-hooks (intern (format "%S-local-vars-hook" major-mode))))
 

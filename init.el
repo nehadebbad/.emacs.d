@@ -23,6 +23,8 @@
 (require 'core-toggle)
 ;; Setup evil mode
 (require 'core-evil)
+;; Core settings
+(require 'core-settings)
 ;; Setup workspaces using persp-mode
 (require 'core-workspaces)
 ;; Setup Ivy and Company
