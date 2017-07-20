@@ -130,8 +130,8 @@
     "N<" 'my/scroll-transient-state/evil-goto-first-line
     "N>" 'my/scroll-transient-state/evil-goto-line
     ;; full page
-    "Nf" 'mc/scroll-transient-state/evil-scroll-page-down
-    "Nb" 'mc/scroll-transient-state/evil-scroll-page-up
+    "Nf" 'my/scroll-transient-state/evil-scroll-page-down
+    "Nb" 'my/scroll-transient-state/evil-scroll-page-up
     ;; half page
     "Nd" 'my/scroll-transient-state/evil-scroll-down
     "Nu" 'my/scroll-transient-state/evil-scroll-up
@@ -273,7 +273,7 @@
   (let ((new-descriptions
          ;; being higher in this list means the replacement is applied later
          '(
-           ("spacemacs/\\(.+\\)" . "\\1")
+           ("my/\\(.+\\)" . "\\1")
            ("spacemacs/toggle-\\(.+\\)" . "\\1")
            ("spacemacs/alternate-buffer" . "last buffer")
            ("spacemacs/toggle-mode-line-\\(.+\\)" . "\\1")
