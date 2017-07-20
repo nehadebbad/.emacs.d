@@ -37,7 +37,11 @@
     which-key
     helm
     paredit
-    async)
+    async
+    evil-escape
+    evil-visualstar
+    exec-path-from-shell
+    help-fns+)
   "A list of packages to ensure are installed at launch.")
 
 (defun my-packages-installed-p ()

@@ -76,6 +76,10 @@ START-REGEXP and END-REGEXP are the boundaries of the text object."
   "Run a hook for the major-mode after the local variables have been processed."
   (run-hooks (intern (format "%S-local-vars-hook" major-mode))))
 
+(defun my/run-text-mode-hooks ()
+  "Runs `text-mode-hook'. Useful for modes that don't derive from
+`text-mode' but should."
+  (run-hooks 'text-mode-hook))
 ;; Utility functions or functions that change the default behaviour of existing functions
 (defun my/new-empty-buffer ()
   "Create a new buffer called untitled(<n>)"

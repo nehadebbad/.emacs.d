@@ -7,6 +7,9 @@
 ;; Load core modules
 (add-to-list 'load-path "~/.emacs.d/core/")
 
+;; Local local modules
+(add-to-list 'load-path "~/.emacs.d/local/")
+
 ;; Setup Solarized Theme
 (require 'core-ui)
 ;; Variables used mostly for evil mode customization
@@ -25,6 +28,11 @@
 (require 'core-evil)
 ;; Core settings
 (require 'core-settings)
+;; Load evil-evilified-state
+(require 'evil-evilified-state)
+;; Settings for an assortment of useful packages
+;; Mostly consists configurations for built-in packages
+(require 'core-packages)
 ;; Setup workspaces using persp-mode
 (require 'core-workspaces)
 ;; Setup Ivy and Company
