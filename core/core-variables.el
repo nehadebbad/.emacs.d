@@ -141,4 +141,17 @@ to disable fullscreen animations in OSX.")
 (defvar dotspacemacs-scratch-mode 'text-mode
   "Default major mode of the scratch buffer.")
 
+(defvar dotspacemacs-auto-save-file-location 'cache
+  "Location where to auto-save files. Possible values are `original' to
+auto-save the file in-place, `cache' to auto-save the file to another
+file stored in the cache directory and `nil' to disable auto-saving.
+Default value is `cache'.")
+
+(defconst spacemacs-cache-directory
+  (expand-file-name (concat user-emacs-directory ".cache/"))
+  "Spacemacs storage area for persistent files")
+(defconst spacemacs-auto-save-directory
+  (expand-file-name (concat spacemacs-cache-directory "auto-save/"))
+  "Spacemacs auto-save directory")
+
 (provide 'core-variables)

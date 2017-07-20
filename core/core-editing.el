@@ -17,8 +17,9 @@
 ;; Kill buffer and its window
 (substitute-key-definition 'kill-buffer 'kill-buffer-and-its-windows global-map)
 
-;; Use spaces to indent
-(setq-default indent-tabs-mode nil)
+;; use only spaces and no tabs
+(setq-default indent-tabs-mode nil
+              tab-width 2)
 
 ;; Multiple cusors as in Sublime Text
 (use-package multiple-cursors
