@@ -102,4 +102,39 @@ to a major mode, a list of such symbols, or the symbol t,
 acting as default. The values are either integers, symbols
 or lists of these.")
 
+;; from Prelude
+;; TODO: dispatch these in the layers
+(defvar my-indent-sensitive-modes
+  '(asm-mode
+    coffee-mode
+    elm-mode
+    haml-mode
+    haskell-mode
+    slim-mode
+    makefile-mode
+    makefile-bsdmake-mode
+    makefile-gmake-mode
+    makefile-imake-mode
+    python-mode
+    yaml-mode)
+  "Modes for which auto-indenting is suppressed.")
+
+;; Regexp for useful and useless buffers for smarter buffer switching
+(defvar my-useless-buffers-regexp '("*\.\+")
+  "Regexp used to determine if a buffer is not useful.")
+(defvar my-useful-buffers-regexp '("\\*scratch\\*")
+  "Regexp used to define buffers that are useful despite matching
+`my-useless-buffers-regexp'.")
+
+(defvar dotspacemacs-large-file-size 1
+  "Size (in MB) above which spacemacs will prompt to open the large file
+literally to avoid performance issues. Opening a file literally means that
+no major mode or minor modes are active.")
+
+(defvar dotspacemacs-persistent-server nil
+  "If non nil advises quit functions to keep server open when quitting.")
+
+(defvar dotspacemacs-fullscreen-use-non-native nil
+  "If non nil `spacemacs/toggle-fullscreen' will not use native fullscreen. Use
+to disable fullscreen animations in OSX.")
 (provide 'core-variables)
