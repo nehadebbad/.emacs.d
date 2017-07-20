@@ -33,6 +33,8 @@
 ;; Settings for an assortment of useful packages
 ;; Mostly consists configurations for built-in packages
 (require 'core-packages)
+;; Evil key bindings
+(require 'core-evil-keybindings)
 ;; Setup workspaces using persp-mode
 (require 'core-workspaces)
 ;; Setup Ivy and Company

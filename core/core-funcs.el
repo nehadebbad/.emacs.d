@@ -90,6 +90,16 @@ START-REGEXP and END-REGEXP are the boundaries of the text object."
 
 
 ;; Utility functions or functions that change the default behaviour of existing functions
+(defun spacemacs/toggle-maximize-buffer ()
+  "Maximize buffer"
+  (interactive)
+  (if (and (= 1 (length (window-list)))
+           (assoc ?_ register-alist))
+      (jump-to-register ?_)
+    (progn
+      (window-configuration-to-register ?_)
+      (delete-other-windows))))
+
 (defun my/new-empty-buffer ()
   "Create a new buffer called untitled(<n>)"
   (interactive)
@@ -1318,5 +1328,32 @@ Decision is based on `dotspacemacs-line-numbers'."
      ;; not explicitly specified by user (meaning if it isn't explicitly
      ;; disabled then it's enabled)
      (and (null enabled-for-modes) (not disabled-for-parent)))))
+
+(defvar-local my--gne-min-line nil
+  "The first line in the buffer that is a valid result.")
+(defvar-local my--gne-max-line nil
+  "The last line in the buffer that is a valid result.")
+(defvar-local my--gne-cur-line 0
+  "The current line in the buffer. (It is problematic to use
+point for this.)")
+(defvar-local my--gne-line-func nil
+  "The function to call to visit the result on a line.")
+
+(defun my/gne-next (num reset)
+  "A generalized next-error function. This function can be used
+as `next-error-function' in any buffer that conforms to the
+Spacemacs generalized next-error API.
+The variables `my--gne-min-line',
+`my--gne-max-line', and `my--line-func' must be
+set."
+  (when reset (setq my--gne-cur-line
+                    my--gne-min-line))
+  (setq my--gne-cur-line
+        (min my--gne-max-line
+             (max my--gne-min-line
+                  (+ num my--gne-cur-line))))
+  (goto-line my--gne-cur-line)
+  (funcall my--gne-line-func
+           (buffer-substring (point-at-bol) (point-at-eol))))
 
 (provide 'core-funcs)
