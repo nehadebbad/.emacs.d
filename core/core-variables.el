@@ -170,4 +170,8 @@ This variable can also be set to a property list for finer control:
 The property `:enabled-for-modes' takes priority over `:disabled-for-modes' and
 restricts line-number to the specified list of major-mode.")
 
+(defvar dotspacemacs-zone-out-when-idle nil
+  "Either nil or a number of seconds. If non-nil zone out after the specified
+number of seconds.")
+
 (provide 'core-variables)

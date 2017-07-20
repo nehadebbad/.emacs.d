@@ -41,7 +41,9 @@
     evil-escape
     evil-visualstar
     exec-path-from-shell
-    help-fns+)
+    help-fns+
+    page-break-lines
+    pcre2el)
   "A list of packages to ensure are installed at launch.")
 
 (defun my-packages-installed-p ()

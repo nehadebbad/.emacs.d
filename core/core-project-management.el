@@ -1,11 +1,3 @@
-(use-package projectile
-  :defer t
-  :init
-  (projectile-global-mode)
-  :config
-  (setq projectile-completion-system 'ivy)
-  (message "projectile loaded"))
-
 (use-package counsel-projectile
   :defer t
   :config

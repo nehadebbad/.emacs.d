@@ -80,6 +80,15 @@ START-REGEXP and END-REGEXP are the boundaries of the text object."
   "Runs `text-mode-hook'. Useful for modes that don't derive from
 `text-mode' but should."
   (run-hooks 'text-mode-hook))
+
+(defun my/system-is-mac ()
+  (eq system-type 'darwin))
+(defun my/system-is-linux ()
+  (eq system-type 'gnu/linux))
+(defun my/system-is-mswindows ()
+  (eq system-type 'windows-nt))
+
+
 ;; Utility functions or functions that change the default behaviour of existing functions
 (defun my/new-empty-buffer ()
   "Create a new buffer called untitled(<n>)"
