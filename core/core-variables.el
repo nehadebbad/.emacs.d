@@ -137,4 +137,8 @@ no major mode or minor modes are active.")
 (defvar dotspacemacs-fullscreen-use-non-native nil
   "If non nil `spacemacs/toggle-fullscreen' will not use native fullscreen. Use
 to disable fullscreen animations in OSX.")
+
+(defvar dotspacemacs-scratch-mode 'text-mode
+  "Default major mode of the scratch buffer.")
+
 (provide 'core-variables)

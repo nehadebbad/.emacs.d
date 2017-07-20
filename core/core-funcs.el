@@ -843,33 +843,33 @@ The body of the advice is in BODY."
    ((spacemacs/system-is-linux) (let ((process-connection-type nil))
                                   (start-process "" nil "xdg-open" file-path)))))
 
-(defun spacemacs/open-file-or-directory-in-external-app (arg)
+(defun my/open-file-or-directory-in-external-app (arg)
   "Open current file in external application.
 If the universal prefix argument is used then open the folder
 containing the current file by the default explorer."
   (interactive "P")
   (if arg
-      (spacemacs//open-in-external-app (expand-file-name default-directory))
+      (my//open-in-external-app (expand-file-name default-directory))
     (let ((file-path (if (derived-mode-p 'dired-mode)
                          (dired-get-file-for-visit)
                        buffer-file-name)))
       (if file-path
-          (spacemacs//open-in-external-app file-path)
+          (my//open-in-external-app file-path)
         (message "No file associated to this buffer.")))))
 
-(defun spacemacs/switch-to-minibuffer-window ()
+(defun my/switch-to-minibuffer-window ()
   "switch to minibuffer window (if active)"
   (interactive)
   (when (active-minibuffer-window)
     (select-window (active-minibuffer-window))))
 
 ;; http://stackoverflow.com/a/10216338/4869
-(defun spacemacs/copy-whole-buffer-to-clipboard ()
+(defun my/copy-whole-buffer-to-clipboard ()
   "Copy entire buffer to clipboard"
   (interactive)
   (clipboard-kill-ring-save (point-min) (point-max)))
 
-(defun spacemacs/copy-clipboard-to-whole-buffer ()
+(defun my/copy-clipboard-to-whole-buffer ()
   "Copy clipboard and replace buffer"
   (interactive)
   (delete-region (point-min) (point-max))
@@ -879,7 +879,7 @@ containing the current file by the default explorer."
 ;; BEGIN align functions
 
 ;; modified function from http://emacswiki.org/emacs/AlignCommands
-(defun spacemacs/align-repeat (start end regexp &optional justify-right after)
+(defun my/align-repeat (start end regexp &optional justify-right after)
   "Repeat alignment with respect to the given regular expression.
 If JUSTIFY-RIGHT is non nil justify to the right instead of the
 left. If AFTER is non-nil, add whitespace to the left instead of
@@ -908,7 +908,7 @@ the right."
     (align-regexp start end complete-regexp group 1 t)))
 
 ;; Modified answer from http://emacs.stackexchange.com/questions/47/align-vertical-columns-of-numbers-on-the-decimal-point
-(defun spacemacs/align-repeat-decimal (start end)
+(defun my/align-repeat-decimal (start end)
   "Align a table of numbers on decimal points and dollar signs (both optional)"
   (interactive "r")
   (require 'align)
@@ -920,47 +920,47 @@ the right."
                        (justify nil t)))
                 nil))
 
-(defmacro spacemacs|create-align-repeat-x (name regexp &optional justify-right default-after)
-  (let ((new-func (intern (concat "spacemacs/align-repeat-" name))))
+(defmacro my|create-align-repeat-x (name regexp &optional justify-right default-after)
+  (let ((new-func (intern (concat "my/align-repeat-" name))))
     `(defun ,new-func (start end switch)
        (interactive "r\nP")
        (let ((after (not (eq (if switch t nil) (if ,default-after t nil)))))
-         (spacemacs/align-repeat start end ,regexp ,justify-right after)))))
+         (my/align-repeat start end ,regexp ,justify-right after)))))
 
-(spacemacs|create-align-repeat-x "comma" "," nil t)
-(spacemacs|create-align-repeat-x "semicolon" ";" nil t)
-(spacemacs|create-align-repeat-x "colon" ":" nil t)
-(spacemacs|create-align-repeat-x "equal" "=")
-(spacemacs|create-align-repeat-x "math-oper" "[+\\-*/]")
-(spacemacs|create-align-repeat-x "ampersand" "&")
-(spacemacs|create-align-repeat-x "bar" "|")
-(spacemacs|create-align-repeat-x "left-paren" "(")
-(spacemacs|create-align-repeat-x "right-paren" ")" t)
-(spacemacs|create-align-repeat-x "left-curly-brace" "{")
-(spacemacs|create-align-repeat-x "right-curly-brace" "}" t)
-(spacemacs|create-align-repeat-x "left-square-brace" "\\[")
-(spacemacs|create-align-repeat-x "right-square-brace" "\\]" t)
-(spacemacs|create-align-repeat-x "backslash" "\\\\")
+(my|create-align-repeat-x "comma" "," nil t)
+(my|create-align-repeat-x "semicolon" ";" nil t)
+(my|create-align-repeat-x "colon" ":" nil t)
+(my|create-align-repeat-x "equal" "=")
+(my|create-align-repeat-x "math-oper" "[+\\-*/]")
+(my|create-align-repeat-x "ampersand" "&")
+(my|create-align-repeat-x "bar" "|")
+(my|create-align-repeat-x "left-paren" "(")
+(my|create-align-repeat-x "right-paren" ")" t)
+(my|create-align-repeat-x "left-curly-brace" "{")
+(my|create-align-repeat-x "right-curly-brace" "}" t)
+(my|create-align-repeat-x "left-square-brace" "\\[")
+(my|create-align-repeat-x "right-square-brace" "\\]" t)
+(my|create-align-repeat-x "backslash" "\\\\")
 
 ;; END align functions
 
-(defun spacemacs/dos2unix ()
+(defun my/dos2unix ()
   "Converts the current buffer to UNIX file format."
   (interactive)
   (set-buffer-file-coding-system 'undecided-unix nil))
 
-(defun spacemacs/unix2dos ()
+(defun my/unix2dos ()
   "Converts the current buffer to DOS file format."
   (interactive)
   (set-buffer-file-coding-system 'undecided-dos nil))
 
-(defun spacemacs/copy-file ()
+(defun my/copy-file ()
   "Write the file under new name."
   (interactive)
   (call-interactively 'write-file))
 
 ;; from https://www.emacswiki.org/emacs/CopyingWholeLines
-(defun spacemacs/duplicate-line-or-region (&optional n)
+(defun my/duplicate-line-or-region (&optional n)
   "Duplicate current line, or region if active.
 With argument N, make N copies.
 With negative N, comment out original line and use the absolute value."
@@ -982,7 +982,7 @@ With negative N, comment out original line and use the absolute value."
         (forward-line 1)
         (forward-char pos)))))
 
-(defun spacemacs/uniquify-lines ()
+(defun my/uniquify-lines ()
   "Remove duplicate adjacent lines in a region or the current buffer"
   (interactive)
   (save-excursion
@@ -994,7 +994,7 @@ With negative N, comment out original line and use the absolute value."
         (while (re-search-forward "^\\(.*\n\\)\\1+" end t)
           (replace-match "\\1"))))))
 
-(defun spacemacs/sort-lines (&optional reverse)
+(defun my/sort-lines (&optional reverse)
   "Sort lines in a region or the current buffer.
 A non-nil argument sorts in reverse order."
   (interactive "P")
@@ -1003,12 +1003,12 @@ A non-nil argument sorts in reverse order."
          (end (if region-active (region-end) (point-max))))
     (sort-lines reverse beg end)))
 
-(defun spacemacs/sort-lines-reverse ()
+(defun my/sort-lines-reverse ()
   "Sort lines in reverse order, in a region or the current buffer."
   (interactive)
-  (spacemacs/sort-lines -1))
+  (my/sort-lines -1))
 
-(defun spacemacs/sort-lines-by-column (&optional reverse)
+(defun my/sort-lines-by-column (&optional reverse)
   "Sort lines by the selected column,
 using a visual block/rectangle selection.
 A non-nil argument sorts in REVERSE order."
@@ -1024,18 +1024,18 @@ A non-nil argument sorts in REVERSE order."
       (sort-columns reverse (region-beginning) (region-end))
     (error "Sorting by column requires a block/rect selection on 2 or more lines.")))
 
-(defun spacemacs/sort-lines-by-column-reverse ()
+(defun my/sort-lines-by-column-reverse ()
 "Sort lines by the selected column in reverse order,
 using a visual block/rectangle selection."
   (interactive)
-  (spacemacs/sort-lines-by-column -1))
+  (my/sort-lines-by-column -1))
 
 ;; BEGIN linum mouse helpers
 
-(defvar spacemacs-linum-mdown-line nil
+(defvar my-linum-mdown-line nil
   "Define persistent variable for linum selection")
 
-(defun spacemacs//line-at-click ()
+(defun my//line-at-click ()
   "Determine the visual line at click"
   (save-excursion
     (let ((click-y (cddr (mouse-position)))
@@ -1046,27 +1046,27 @@ using a visual block/rectangle selection."
       (1+ (line-number-at-pos))
       )))
 
-(defun spacemacs/md-select-linum (event)
+(defun my/md-select-linum (event)
   "Set point as spacemacs-linum-mdown-line"
   (interactive "e")
   (mouse-select-window event)
-  (goto-line (spacemacs//line-at-click))
+  (goto-line (my//line-at-click))
   (set-mark (point))
-  (setq spacemacs-linum-mdown-line
+  (setq my-linum-mdown-line
         (line-number-at-pos)))
 
-(defun spacemacs/mu-select-linum ()
+(defun my/mu-select-linum ()
   "Select code block between point and spacemacs-linum-mdown-line"
   (interactive)
-  (when spacemacs-linum-mdown-line
+  (when my-linum-mdown-line
     (let (mu-line)
-      (setq mu-line (spacemacs//line-at-click))
-      (goto-line (max spacemacs-linum-mdown-line mu-line))
+      (setq mu-line (my//line-at-click))
+      (goto-line (max my-linum-mdown-line mu-line))
       (set-mark (line-end-position))
-      (goto-line (min spacemacs-linum-mdown-line mu-line))
-      (setq spacemacs-linum-mdown-line nil))))
+      (goto-line (min my-linum-mdown-line mu-line))
+      (setq my-linum-mdown-line nil))))
 
-(defun spacemacs/select-current-block ()
+(defun my/select-current-block ()
   "Select the current block of text between blank lines."
   (interactive)
   (let (p1)
@@ -1097,7 +1097,7 @@ using a visual block/rectangle selection."
               (message "compilation ok."))))))
 
 ;; from http://www.emacswiki.org/emacs/WordCount
-(defun spacemacs/count-words-analysis (start end)
+(defun my/count-words-analysis (start end)
   "Count how many times each word is used in the region.
  Punctuation is ignored."
   (interactive "r")
@@ -1139,29 +1139,29 @@ Compare them on count first,and in case of tie sort them alphabetically."
 
 ;; indent on paste
 ;; from Prelude: https://github.com/bbatsov/prelude
-(defun spacemacs/yank-advised-indent-function (beg end)
+(defun my/yank-advised-indent-function (beg end)
   "Do indentation, as long as the region isn't too large."
-  (if (<= (- end beg) spacemacs-yank-indent-threshold)
+  (if (<= (- end beg) my-yank-indent-threshold)
       (indent-region beg end nil)))
 
-(spacemacs|advise-commands
+(my|advise-commands
  "indent" (yank yank-pop evil-paste-before evil-paste-after) around
  "If current mode is not one of spacemacs-indent-sensitive-modes
  indent yanked text (with universal arg don't indent)."
  (evil-start-undo-step)
  ad-do-it
  (if (and (not (equal '(4) (ad-get-arg 0)))
-          (not (member major-mode spacemacs-indent-sensitive-modes))
+          (not (member major-mode my-indent-sensitive-modes))
           (or (derived-mode-p 'prog-mode)
-              (member major-mode spacemacs-indent-sensitive-modes)))
+              (member major-mode my-indent-sensitive-modes)))
      (let ((transient-mark-mode nil)
            (save-undo buffer-undo-list))
-       (spacemacs/yank-advised-indent-function (region-beginning)
+       (my/yank-advised-indent-function (region-beginning)
                                                (region-end))))
  (evil-end-undo-step))
 
 ;; find file functions in split
-(defun spacemacs//display-in-split (buffer alist)
+(defun my//display-in-split (buffer alist)
   "Split selected window and display BUFFER in the new window.
 BUFFER and ALIST have the same form as in `display-buffer'. If ALIST contains
 a split-side entry, its value must be usable as the SIDE argument for
@@ -1170,19 +1170,19 @@ a split-side entry, its value must be usable as the SIDE argument for
     (window--display-buffer buffer window 'window alist)
     window))
 
-(defun spacemacs/find-file-vsplit (file)
+(defun my/find-file-vsplit (file)
   "find file in vertical split"
   (interactive "FFind file (vsplit): ")
   (let ((buffer (find-file-noselect file)))
-    (pop-to-buffer buffer '(spacemacs//display-in-split (split-side . right)))))
+    (pop-to-buffer buffer '(my//display-in-split (split-side . right)))))
 
-(defun spacemacs/find-file-split (file)
+(defun my/find-file-split (file)
   "find file in horizontal split"
   (interactive "FFind file (split): ")
   (let ((buffer (find-file-noselect file)))
-    (pop-to-buffer buffer '(spacemacs//display-in-split (split-side . below)))))
+    (pop-to-buffer buffer '(my//display-in-split (split-side . below)))))
 
-(defun spacemacs/switch-to-scratch-buffer (&optional arg)
+(defun my/switch-to-scratch-buffer (&optional arg)
   "Switch to the `*scratch*' buffer, creating it first if needed.
 if prefix argument ARG is given, switch to it in an other, possibly new window."
   (interactive "P")
@@ -1195,22 +1195,22 @@ if prefix argument ARG is given, switch to it in an other, possibly new window."
                (fboundp dotspacemacs-scratch-mode))
       (funcall dotspacemacs-scratch-mode))))
 
-(defvar spacemacs--killed-buffer-list nil
+(defvar my--killed-buffer-list nil
   "List of recently killed buffers.")
 
-(defun spacemacs//add-buffer-to-killed-list ()
+(defun my//add-buffer-to-killed-list ()
   "If buffer is associated with a file name, add that file
 to the `killed-buffer-list' when killing the buffer."
   (when buffer-file-name
-    (push buffer-file-name spacemacs--killed-buffer-list)))
+    (push buffer-file-name my--killed-buffer-list)))
 
-(defun spacemacs/reopen-killed-buffer ()
+(defun my/reopen-killed-buffer ()
   "Reopen the most recently killed file buffer, if one exists."
   (interactive)
-  (when spacemacs--killed-buffer-list
-    (find-file (pop spacemacs--killed-buffer-list))))
+  (when my--killed-buffer-list
+    (find-file (pop my--killed-buffer-list))))
 
-(defun spacemacs/switch-to-messages-buffer (&optional arg)
+(defun my/switch-to-messages-buffer (&optional arg)
   "Switch to the `*Messages*' buffer.
 if prefix argument ARG is given, switch to it in an other, possibly new window."
   (interactive "P")
@@ -1220,7 +1220,7 @@ if prefix argument ARG is given, switch to it in an other, possibly new window."
         (switch-to-buffer-other-window (current-buffer))
       (switch-to-buffer (current-buffer)))))
 
-(defun spacemacs/close-compilation-window ()
+(defun my/close-compilation-window ()
   "Close the window containing the '*compilation*' buffer."
   (interactive)
   (when compilation-last-buffer
@@ -1229,26 +1229,26 @@ if prefix argument ARG is given, switch to it in an other, possibly new window."
 
 ;; Line number
 
-(defun spacemacs/no-linum (&rest ignore)
+(defun my/no-linum (&rest ignore)
   "Disable linum if current buffer."
   (when (or 'linum-mode global-linum-mode)
     (linum-mode 0)))
 
-(defun spacemacs/enable-line-numbers-p ()
+(defun my/enable-line-numbers-p ()
   "Return non-nil if line numbers should be enabled for current buffer.
 Decision is based on `dotspacemacs-line-numbers'."
   (and dotspacemacs-line-numbers
-       (spacemacs//linum-current-buffer-is-not-special)
-       (spacemacs//linum-curent-buffer-is-not-too-big)
-       (or (spacemacs//linum-backward-compabitility)
-           (spacemacs//linum-enabled-for-current-major-mode))))
+       (my//linum-current-buffer-is-not-special)
+       (my//linum-curent-buffer-is-not-too-big)
+       (or (my//linum-backward-compabitility)
+           (my//linum-enabled-for-current-major-mode))))
 
-(defun spacemacs//linum-on (origfunc &rest args)
+(defun my//linum-on (origfunc &rest args)
   "Advice function to improve `linum-on' function."
-  (when (spacemacs/enable-line-numbers-p)
+  (when (my/enable-line-numbers-p)
     (apply origfunc args)))
 
-(defun spacemacs//linum-update-window-scale-fix (win)
+(defun my//linum-update-window-scale-fix (win)
   "Fix linum for scaled text in the window WIN."
   (set-window-margins win
                       (ceiling (* (if (boundp 'text-scale-mode-step)
@@ -1257,7 +1257,7 @@ Decision is based on `dotspacemacs-line-numbers'."
                                     1)
                                   (or (car (window-margins win)) 1)))))
 
-(defun spacemacs//linum-backward-compabitility ()
+(defun my//linum-backward-compabitility ()
   "Return non-nil if `dotspacemacs-line-numbers' has an old format and if
 `linum' should be enabled."
   (and dotspacemacs-line-numbers
@@ -1265,16 +1265,16 @@ Decision is based on `dotspacemacs-line-numbers'."
        (or (eq dotspacemacs-line-numbers t)
            (eq dotspacemacs-line-numbers 'relative))))
 
-(defun spacemacs//linum-current-buffer-is-not-special ()
+(defun my//linum-current-buffer-is-not-special ()
   "Return non-nil if current buffer is not a special buffer."
   (not (string-match-p "\\*.*\\*" (buffer-name))))
 
-(defun spacemacs//linum-curent-buffer-is-not-too-big ()
+(defun my//linum-curent-buffer-is-not-too-big ()
   "Return non-nil if buffer size is not too big."
   (not (and (listp dotspacemacs-line-numbers)
-            (spacemacs/mplist-get dotspacemacs-line-numbers :size-limit-kb)
+            (my/mplist-get dotspacemacs-line-numbers :size-limit-kb)
             (> (buffer-size)
-               (* 1000 (car (spacemacs/mplist-get dotspacemacs-line-numbers
+               (* 1000 (car (my/mplist-get dotspacemacs-line-numbers
                                                   :size-limit-kb)))))))
 
 ;; mode in :enabled, not in :disabled ==> t
@@ -1284,11 +1284,11 @@ Decision is based on `dotspacemacs-line-numbers'."
 ;; not in :enabled, not in :disabled, :enabled is empty ==> t
 ;; not in :enabled, not in :disabled, :enabled is not empty ==> nil
 ;; both :enabled and :disabled are empty ==> t
-(defun spacemacs//linum-enabled-for-current-major-mode ()
+(defun my//linum-enabled-for-current-major-mode ()
   "Return non-nil if line number is enabled for current major-mode."
-  (let* ((enabled-for-modes (spacemacs/mplist-get dotspacemacs-line-numbers
+  (let* ((enabled-for-modes (my/mplist-get dotspacemacs-line-numbers
                                                   :enabled-for-modes))
-         (disabled-for-modes (spacemacs/mplist-get dotspacemacs-line-numbers
+         (disabled-for-modes (my/mplist-get dotspacemacs-line-numbers
                                                    :disabled-for-modes))
          (enabled-for-parent (apply #'derived-mode-p enabled-for-modes))
          (disabled-for-parent (apply #'derived-mode-p disabled-for-modes)))
@@ -1300,7 +1300,7 @@ Decision is based on `dotspacemacs-line-numbers'."
           ;; :enabled-for-modes and in :disabled-for-modes. Return non-nil if
           ;; enabled-for-parent is the more specific parent (IOW doesn't derive
           ;; from disabled-for-parent)
-          (not (spacemacs/derived-mode-p enabled-for-parent disabled-for-parent)))
+          (not (my/derived-mode-p enabled-for-parent disabled-for-parent)))
      ;; current mode (or parent) not explicitly disabled, and :enabled-for-modes
      ;; not explicitly specified by user (meaning if it isn't explicitly
      ;; disabled then it's enabled)
