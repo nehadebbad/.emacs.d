@@ -344,13 +344,135 @@
   :documentation "Enable semantic-stickyfunc globally."
   :evil-leader "T C-S")
 
+;; quit -----------------------------------------------------------------------
+(my/set-leader-keys
+  "qs" 'my/save-buffers-kill-emacs
+  "qq" 'my/prompt-kill-emacs
+  "qQ" 'my/kill-emacs
+  "qf" 'my/frame-killer)
+;; window ---------------------------------------------------------------------
+(defun split-window-below-and-focus ()
+  "Split the window vertically and focus the new window."
+  (interactive)
+  (split-window-below)
+  (windmove-down)
+  (when (and (boundp 'golden-ratio-mode)
+             (symbol-value golden-ratio-mode))
+    (golden-ratio)))
+
+(defun split-window-right-and-focus ()
+  "Split the window horizontally and focus the new window."
+  (interactive)
+  (split-window-right)
+  (windmove-right)
+  (when (and (boundp 'golden-ratio-mode)
+             (symbol-value golden-ratio-mode))
+    (golden-ratio)))
+
+(my/set-leader-keys
+  "w TAB"  'my/alternate-window
+  "w2"  'my/layout-double-columns
+  "w3"  'my/layout-triple-columns
+  "wb"  'my/switch-to-minibuffer-window
+  "wd"  'my/delete-window
+  "wt"  'my/toggle-current-window-dedication
+  "wf"  'follow-mode
+  "wF"  'make-frame
+  "wH"  'evil-window-move-far-left
+  "w <S-left>"  'evil-window-move-far-left
+  "wh"  'evil-window-left
+  "w <left>"  'evil-window-left
+  "wJ"  'evil-window-move-very-bottom
+  "w <S-down>"  'evil-window-move-very-bottom
+  "wj"  'evil-window-down
+  "w <down>"  'evil-window-down
+  "wK"  'evil-window-move-very-top
+  "w <S-up>"  'evil-window-move-very-top
+  "wk"  'evil-window-up
+  "w <up>"  'evil-window-up
+  "wL"  'evil-window-move-far-right
+  "w <S-right>"  'evil-window-move-far-right
+  "wl"  'evil-window-right
+  "w <right>"  'evil-window-right
+  "wm"  'my/toggle-maximize-buffer
+  ;"wc"  'my/toggle-centered-buffer-mode ; TODO centered buffer mode
+  ;"wC"  'my/toggle-centered-buffer-mode-frame
+  "wo"  'other-frame
+  "wr"  'my/rotate-windows-forward
+  "wR"  'my/rotate-windows-backward
+  "ws"  'split-window-below
+  "wS"  'split-window-below-and-focus
+  "w-"  'split-window-below
+  "wU"  'winner-redo
+  "wu"  'winner-undo
+  "wv"  'split-window-right
+  "wV"  'split-window-right-and-focus
+  "ww"  'other-window
+  "w/"  'split-window-right
+  "w="  'balance-windows
+  "w+"  'my/window-layout-toggle
+  "w_"  'my/maximize-horizontally)
+;; text -----------------------------------------------------------------------
+(defalias 'count-region 'count-words-region)
+
+(my/set-leader-keys
+  "xa&" 'my/align-repeat-ampersand
+  "xa(" 'my/align-repeat-left-paren
+  "xa)" 'my/align-repeat-right-paren
+  "xa{" 'my/align-repeat-left-curly-brace
+  "xa}" 'my/align-repeat-right-curly-brace
+  "xa[" 'my/align-repeat-left-square-brace
+  "xa]" 'my/align-repeat-right-square-brace
+  "xa," 'my/align-repeat-comma
+  "xa." 'my/align-repeat-decimal
+  "xa:" 'my/align-repeat-colon
+  "xa;" 'my/align-repeat-semicolon
+  "xa=" 'my/align-repeat-equal
+  "xa\\" 'my/align-repeat-backslash
+  "xaa" 'align
+  "xac" 'align-current
+  "xam" 'my/align-repeat-math-oper
+  "xar" 'my/align-repeat
+  "xa|" 'my/align-repeat-bar
+  "xc"  'count-region
+  "xd SPC" 'just-one-space
+  "xdw" 'delete-trailing-whitespace
+  "xjc" 'set-justification-center
+  "xjf" 'set-justification-full
+  "xjl" 'set-justification-left
+  "xjn" 'set-justification-none
+  "xjr" 'set-justification-right
+  "xlc" 'my/sort-lines-by-column
+  "xlC" 'my/sort-lines-by-column-reverse
+  "xld" 'my/duplicate-line-or-region
+  "xls" 'my/sort-lines
+  "xlS" 'my/sort-lines-reverse
+  "xlu" 'my/uniquify-lines
+  "xtc" 'transpose-chars
+  "xtl" 'transpose-lines
+  "xtw" 'transpose-words
+  "xU"  'upcase-region
+  "xu"  'downcase-region
+  "xwc" 'my/count-words-analysis
+  "x TAB" 'indent-rigidly)
+
+(define-key indent-rigidly-map "h" 'indent-rigidly-left)
+(define-key indent-rigidly-map "l" 'indent-rigidly-right)
+(define-key indent-rigidly-map "H" 'indent-rigidly-left-to-tab-stop)
+(define-key indent-rigidly-map "L" 'indent-rigidly-right-to-tab-stop)
+
+;; shell ----------------------------------------------------------------------
+(with-eval-after-load 'shell
+  (evil-define-key 'insert comint-mode-map [up] 'comint-previous-input)
+  (evil-define-key 'insert comint-mode-map [down] 'comint-next-input))
+
 ;; ---------------------------------------------------------------------------
 ;; Transient-states
 ;; ---------------------------------------------------------------------------
 
 ;; Buffer transient state
 
-(myy|define-transient-state buffer
+(my|define-transient-state buffer
   :title "Buffer Selection Transient State"
   :doc (concat "
  [_C-1_.._C-9_] goto nth window            [_n_]^^   next buffer

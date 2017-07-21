@@ -662,6 +662,26 @@ in a split window to the right."
   (interactive)
   (my/new-empty-buffer 'right))
 
+(defun my/alternate-window ()
+  "Switch back and forth between current and last window in the
+current frame."
+  (interactive)
+  (let (;; switch to first window previously shown in this frame
+        (prev-window (get-mru-window nil t t)))
+    ;; Check window was not found successfully
+    (unless prev-window (user-error "Last window not found."))
+    (select-window prev-window)))
+
+(defun my/maximize-horizontally ()
+  "Delete all windows left or right of the current window."
+  (interactive)
+  (require 'windmove)
+  (save-excursion
+    (while (condition-case nil (windmove-left) (error nil))
+      (delete-window))
+    (while (condition-case nil (windmove-right) (error nil))
+      (delete-window))))
+
 (defun my/split-window-vertically-and-switch ()
   (interactive)
   (split-window-vertically)

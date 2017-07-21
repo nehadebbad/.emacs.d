@@ -174,4 +174,14 @@ restricts line-number to the specified list of major-mode.")
   "Either nil or a number of seconds. If non-nil zone out after the specified
 number of seconds.")
 
+(defvar dotspacemacs-active-transparency 90
+  "A value from the range (0..100), in increasing opacity, which describes the
+transparency level of a frame when it's active or selected. Transparency
+can be toggled through `toggle-transparency'.")
+
+(defvar dotspacemacs-inactive-transparency 90
+  "A value from the range (0..100), in increasing opacity, which describes the
+transparency level of a frame when it's inactive or deselected. Transparency
+can be toggled through `toggle-transparency'.")
+
 (provide 'core-variables)
