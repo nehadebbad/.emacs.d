@@ -43,7 +43,16 @@
     exec-path-from-shell
     help-fns+
     page-break-lines
-    pcre2el)
+    pcre2el
+    aggressive-indent
+    avy
+    clean-aindent-mode
+    expand-region
+    hexl
+    link-hint
+    move-text
+    origami
+    ws-butler)
   "A list of packages to ensure are installed at launch.")
 
 (defun my-packages-installed-p ()

@@ -35,6 +35,8 @@
 (require 'core-packages)
 ;; Evil key bindings
 (require 'core-evil-keybindings)
+;; Editing preferences
+(require 'core-editing)
 ;; Setup workspaces using persp-mode
 (require 'core-workspaces)
 ;; Setup Ivy and Company
@@ -43,8 +45,6 @@
 (require 'core-project-management)
 ;; Setup magit
 (require 'core-version-control)
-;; Editing preferences
-(require 'core-editing)
 
 ;; Prefer UTF-8 enconding
 (prefer-coding-system 'utf-8)

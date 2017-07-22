@@ -184,4 +184,20 @@ can be toggled through `toggle-transparency'.")
 transparency level of a frame when it's inactive or deselected. Transparency
 can be toggled through `toggle-transparency'.")
 
+(defvar dotspacemacs-smartparens-strict-mode nil
+  "If non-nil smartparens-strict-mode will be enabled in programming modes.")
+
+(defvar dotspacemacs-smart-closing-parenthesis nil
+  "If non-nil pressing the closing parenthesis `)' key in insert mode passes
+  over any automatically added closing parenthesis, bracket, quote, etc…
+  This can be temporary disabled by pressing `C-q' before `)'. (default nil)")
+
+(defvar dotspacemacs-whitespace-cleanup nil
+  "delete whitespace while saving buffer. possible values are `all'
+to aggressively delete empty lines and long sequences of whitespace, `trailing'
+to delete only the whitespace at end of lines, `changed' to delete only
+whitespace for changed lines or `nil' to disable cleanup.")
+
+
+
 (provide 'core-variables)

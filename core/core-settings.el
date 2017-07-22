@@ -140,4 +140,29 @@
 ;; cache files
 (setq tramp-persistency-file-name (concat spacemacs-cache-directory "tramp"))
 
+;; Some useful utility functions
+(load-file "~/.emacs.d/resources/misc-cmds.el")
+
+;; Wrap lines
+(global-visual-line-mode)
+
+;; Kill buffer and its window
+(substitute-key-definition 'kill-buffer 'kill-buffer-and-its-windows global-map)
+
+;; use only spaces and no tabs
+(setq-default indent-tabs-mode nil
+              tab-width 2)
+;; Treat terms in camel case as seprate words globally
+(global-subword-mode 1)
+
+;; Smooth Scrolling
+(load-file "~/.emacs.d/resources/smooth-scrolling.el")
+(require 'smooth-scrolling)
+(setq linum-delay t)
+(setq auto-window-vscroll nil)
+(setq scroll-conservatively 10000)
+(setq auto-save-interval 500)
+(setq mouse-wheel-follow-mouse 't)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+
 (provide 'core-settings)

@@ -110,7 +110,6 @@
   "TAB"   'my/alternate-buffer
   "bd"    'my/kill-this-buffer
   "be"    'my/safe-erase-buffer
-  "bh"    'my/home
   "b C-d" 'my/kill-other-buffers
   "b C-S-d" 'my/kill-matching-buffers-rudely
   "bn"    'next-buffer

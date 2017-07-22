@@ -88,6 +88,10 @@ START-REGEXP and END-REGEXP are the boundaries of the text object."
 (defun my/system-is-mswindows ()
   (eq system-type 'windows-nt))
 
+(defun my/add-to-hooks (fun hooks)
+  "Add function to hooks"
+  (dolist (hook hooks)
+    (add-hook hook fun)))
 
 ;; Utility functions or functions that change the default behaviour of existing functions
 (defun spacemacs/toggle-maximize-buffer ()
