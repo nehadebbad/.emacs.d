@@ -52,7 +52,14 @@
     link-hint
     move-text
     origami
-    ws-butler)
+    ws-butler
+    adaptive-wrap
+    hide-comnt
+    highlight-indentation
+    highlight-numbers
+    highlight-parentheses
+    volatile-highlights
+    hl-anything)
   "A list of packages to ensure are installed at launch.")
 
 (defun my-packages-installed-p ()

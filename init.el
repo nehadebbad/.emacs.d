@@ -37,6 +37,8 @@
 (require 'core-evil-keybindings)
 ;; Editing preferences
 (require 'core-editing)
+;; Editing visual preferences
+(require 'core-editing-visual)
 ;; Setup workspaces using persp-mode
 (require 'core-workspaces)
 ;; Setup Ivy and Company

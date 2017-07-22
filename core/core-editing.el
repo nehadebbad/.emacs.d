@@ -1,13 +1,5 @@
 (global-prettify-symbols-mode t)
 
-;; Matching paranthesis
-(use-package rainbow-delimiters
-  :defer t
-  :init
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-  :config
-  (message "rainbow-delimeters loaded"))
-
 ;; Multiple cusors as in Sublime Text
 (use-package multiple-cursors
   :defer t

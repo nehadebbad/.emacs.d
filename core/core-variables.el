@@ -198,6 +198,9 @@ to aggressively delete empty lines and long sequences of whitespace, `trailing'
 to delete only the whitespace at end of lines, `changed' to delete only
 whitespace for changed lines or `nil' to disable cleanup.")
 
-
+(defvar dotspacemacs-highlight-delimiters 'all
+  "Select a scope to highlight delimiters. Possible values are `any',
+`current', `all' or `nil'. Default is `all' (highlight any scope and
+ emphasis the current one.")
 
 (provide 'core-variables)
